@@ -10,3 +10,4 @@
 *.elf
 /.settings
 /Debug/
+version.h
