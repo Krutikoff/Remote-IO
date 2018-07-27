@@ -20,11 +20,13 @@
  */
 
 #include "../../Modbus/port/port.h"
+#include "Modbus/config_modbus.h"
 #include "mb.h"
 #include "mbport.h"
 
 /* USER CODE*/
-#include <Modbus/config_mb.h>
+
+#include "libopencm3/stm32/f1/nvic.h"
 /* END*/
 
 /* ----------------------- static functions ---------------------------------*/
