@@ -29,6 +29,7 @@
  */
 
 /* ----------------------- System includes ----------------------------------*/
+
 #include "stdlib.h"
 #include "string.h"
 
@@ -42,6 +43,8 @@
 #include "mbframe.h"
 #include "mbproto.h"
 #include "mbfunc.h"
+#include "hw/registers.h"
+/* END */
 
 #include "mbport.h"
 #if MB_SLAVE_RTU_ENABLED == 1
@@ -411,99 +414,6 @@ eMBErrorCode eMBPoll( void )
     return MB_ENOERR;
 }
 
-#define REG_HOLDING_START           0x0
-#define REG_HOLDING_NREGS           25
-static USHORT usRegHoldingStart = REG_HOLDING_START;
-static USHORT usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
-
-#define REG_INPUT_START             0x100
-#define REG_INPUT_NREGS             28
-static USHORT usRegInputStart = REG_INPUT_START;
-static USHORT usRegInputBuf[REG_INPUT_NREGS] = {0};
-
-#define REG_COIL_START              0x200
-#define REG_COIL_NREGS              21
-static USHORT usRegCoilStart = REG_COIL_START;
-static BOOL   usRegCoilBuf[REG_COIL_NREGS] = {0};
-
-#define REG_DISCRETE_START          0x300
-#define REG_DISCRETE_NREGS          1
-static USHORT usRegDiscreteStart = REG_DISCRETE_START;
-static BOOL   usRegDiscreteBuf[REG_DISCRETE_NREGS] = {0};
-
-void set_single_coil(uint8_t coil, BOOL value)
-{
-	if (coil < REG_COIL_NREGS)
-	{
-		usRegCoilBuf[coil] = value;
-	}
-}
-BOOL get_single_coil(uint8_t coil)
-{
-	if (coil < REG_COIL_NREGS)
-	{
-		return usRegCoilBuf[coil];
-	}
-
-	return FALSE;
-}
-void set_single_input(uint8_t input, BOOL value)
-{
-	if(input < REG_DISCRETE_NREGS)
-	{
-		usRegDiscreteBuf[input] = value;
-	}
-}
-BOOL get_single_input(uint8_t input)
-{
-	if(input < REG_DISCRETE_NREGS)
-	{
-		return usRegDiscreteBuf[input];
-	}
-
-	return FALSE;
-}
-void set_single_ai(uint8_t ai, USHORT value)
-{
-	if (ai < REG_INPUT_NREGS)
-	{
-		usRegInputBuf[ai] = value;
-	}
-}
-USHORT get_single_ai(uint8_t ai)
-{
-	if (ai < REG_INPUT_NREGS)
-	{
-		return usRegInputBuf[ai];
-	}
-
-	return 0;
-}
-void set_single_ao(uint8_t ao, USHORT value)
-{
-	if (ao < REG_HOLDING_NREGS)
-	{
-		usRegHoldingBuf[ao] = value;
-	}
-}
-USHORT get_single_ao(uint8_t ao)
-{
-	if (ao < REG_HOLDING_NREGS)
-	{
-		return usRegHoldingBuf[ao];
-	}
-
-	return 0;
-}
-
-void set_all_ao(void *buffer)
-{
-	memcpy(usRegHoldingBuf, buffer, (REG_HOLDING_NREGS * 2));
-}
-void get_all_ao(void *buffer)
-{
-	memcpy(buffer, usRegHoldingBuf, (REG_HOLDING_NREGS * 2));
-}
 
 eMBErrorCode    eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress,
                                USHORT usNRegs )

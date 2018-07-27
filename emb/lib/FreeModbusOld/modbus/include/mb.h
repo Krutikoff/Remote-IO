@@ -41,17 +41,8 @@ PR_BEGIN_EXTERN_C
 #include "mbproto.h"
 
 #include "stdint.h"
-void set_single_coil(uint8_t coil, BOOL value);
-BOOL get_single_coil(uint8_t coil);
-void set_single_input(uint8_t input, BOOL value);
-BOOL get_single_input(uint8_t input);
-void set_single_ai(uint8_t ai, USHORT value);
-USHORT get_single_ai(uint8_t ai);
-void set_single_ao(uint8_t ao, USHORT value);
-USHORT get_single_ao(uint8_t ao);
 
-void set_all_ao(void *buffer);
-void get_all_ao(void *buffer);
+
 
 /*! \defgroup modbus Modbus
  * \code #include "mb.h" \endcode
