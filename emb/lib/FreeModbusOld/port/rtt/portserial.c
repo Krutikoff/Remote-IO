@@ -22,7 +22,7 @@
 #include "port.h"
 #include "stdio.h"
 #include <dbg/debug.h>
-#include <Modbus/config_mb.h>
+#include <Modbus/config_modbus.h>
 
 
 #include "libopencm3/stm32/rcc.h"

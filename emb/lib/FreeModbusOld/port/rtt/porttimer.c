@@ -42,8 +42,12 @@ BOOL xMBPortTimersInit(USHORT usTim1Timerout50us)
 {
 	/* Enable TIM2 clock. */
 	//rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
+	rcc_periph_clock_enable(RCC_TIM2);
+
+
  	nvic_enable_irq(NVIC_TIM2_IRQ);
 	timer_reset(TIM2);
+ 	//timer_clear_flag(TIM_SR_UIF); // Clear Update interrupt flag
 	/* Timer global mode: - Divider 1, Alignment edge, Direction up */
 	timer_set_mode(TIM2, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
 	timer_continuous_mode(TIM2);

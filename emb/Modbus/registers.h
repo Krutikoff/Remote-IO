@@ -1,32 +1,14 @@
-#ifndef MODBUS_REGISTERS_H_
-#define MODBUS_REGISTERS_H_
+#ifndef Registers_H
+#define Registers_H
 
-#include <Modbus/config_mb.h>
+//pragma once
+
 #include <mb.h>
 
 
 
 
-#define REG_COIL_START				0x0001
-#define REG_COIL_NREGS				32
-static USHORT usRegCoilStart = REG_COIL_START;
-static BOOL   usRegCoilBuf[REG_COIL_NREGS] = {0};
 
-#define REG_DISCRETE_START			0x1001
-#define REG_DISCRETE_NREGS			24
-static USHORT usRegDiscreteStart = REG_DISCRETE_START;
-static BOOL   usRegDiscreteBuf[REG_DISCRETE_NREGS] = {0};
-
-#define REG_HOLDING_START			0x4001
-#define REG_HOLDING_NREGS			3
-static USHORT usRegHoldingStart = REG_HOLDING_START;
-static USHORT usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
-
-
-#define REG_INPUT_START			0x3001
-#define REG_INPUT_NREGS			9
-static USHORT usRegInputStart = REG_INPUT_START;
-static USHORT usRegInputBuf[REG_INPUT_NREGS] = {0};
 
 //#include <stdint.h>
 
@@ -124,4 +106,4 @@ typedef enum : uint8_t {
 
 
 
-#endif /* MODBUS_REGISTERS_H_ */
+#endif /* REGISTERS_H_ */

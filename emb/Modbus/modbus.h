@@ -1,30 +1,24 @@
-/*
- * data_transceiver.h
- *
- *  Created on: 26 июл. 2018 г.
- *      Author: Максим
- */
-
-#ifndef MODBUS_MODBUS_H_
-#define MODBUS_MODBUS_H_
+#pragma once
 
 #include <Modbus/registers.h>
+#include <Modbus/config_modbus.h>
 /*#include "modbus.h"
 #include "mb.h"*/
 
 
-class DataTransceiver {
+class Modbus {
 public:
-	DataTransceiver();
+	using Error = eMBErrorCode;
+	Modbus();
 	//bool init();
 	void poll();
 	void set_flag(RegisterType type, uint8_t address, bool value);
 	bool get_flag(RegisterType type, uint8_t address);
 	void set_register(RegisterType type, uint8_t address, uint16_t value);
-	uint16_t get_register(RegisterType type, uint8_t address);
+	Error get_register(RegisterType type, uint8_t address, uint16_t &value);
 
 };
 
 
 
-#endif /* MODBUS_MODBUS_H_ */
+

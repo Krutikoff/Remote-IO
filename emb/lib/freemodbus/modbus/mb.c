@@ -57,6 +57,8 @@
 #define MB_PORT_HAS_CLOSE 0
 #endif
 
+
+
 /* ----------------------- Static variables ---------------------------------*/
 
 static UCHAR    ucMBAddress;
@@ -410,3 +412,5 @@ eMBPoll( void )
     }
     return MB_ENOERR;
 }
+
+

@@ -26,6 +26,8 @@
 
 #include "libopencm3/stm32/timer.h"
 #include "libopencm3/stm32/f1/nvic.h"
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
 
 static uint16_t timeout = 0;
 static uint16_t downcounter = 0;
@@ -39,16 +41,45 @@ xMBPortTimersInit( USHORT usTim1Timerout50us )
 {
 	/* Enable TIM2 clock. */
 		//rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
-	 	nvic_enable_irq(NVIC_TIM2_IRQ);
-		timer_reset(TIM2);
-		/* Timer global mode: - Divider 1, Alignment edge, Direction up */
-		timer_set_mode(TIM2, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
-		timer_continuous_mode(TIM2);
-		timer_set_prescaler(TIM2, 29); /* 72MHz to 50 microseconds period */
-		timer_set_period(TIM2, 49);
-		timeout = usTim1Timerout50us;
+#if 1
+	rcc_periph_clock_enable(RCC_TIM2);
+	nvic_enable_irq(NVIC_TIM2_IRQ);
 
-	    return TRUE;
+	/* Timer global mode: - Divider 1, Alignment edge, Direction up */
+	timer_set_mode(TIM2, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
+	timer_continuous_mode(TIM2);
+	timer_set_prescaler(TIM2, (rcc_apb1_frequency * 2) / 100000); /* 72MHz to 50 microseconds period */
+	timer_set_period(TIM2, 5);
+	timeout = usTim1Timerout50us;
+	timer_enable_counter(TIM2);
+#endif
+
+#if 0
+	rcc_periph_clock_enable(RCC_TIM2);
+
+	nvic_enable_irq(NVIC_TIM2_IRQ);
+	nvic_set_priority(NVIC_TIM2_IRQ, 1);
+
+
+
+	TIM_CNT(TIM2) = 1;
+
+	/* Set timer prescaler. 72MHz/1440 => 50000 counts per second. */
+	TIM_PSC(TIM2) = (rcc_apb1_frequency * 2) / 100000;
+
+	TIM_ARR(TIM2) = 5; //2.5
+
+	TIM_DIER(TIM2) |= TIM_DIER_UIE;
+
+	TIM_CR1(TIM2) |= TIM_CR1_CEN;
+#endif
+
+
+
+
+
+
+	return TRUE;
 }
 
 
@@ -78,6 +109,11 @@ vMBPortTimersDisable(  )
 
 void tim2_isr(void)
 {
+	gpio_toggle(GPIOA, GPIO0);   /* LED2 on/off. */
+
+	//TIM_SR(TIM2) &= ~TIM_SR_UIF; /* Clear interrrupt flag. */
+
+
 	if (timer_interrupt_source(TIM2, TIM_SR_UIF))
 	{
 		timer_clear_flag(TIM2, TIM_SR_UIF); /* Clear interrrupt flag. */
@@ -85,4 +121,6 @@ void tim2_isr(void)
 			pxMBPortCBTimerExpired();
 	}
 }
+
+
 
