@@ -110,6 +110,7 @@ static void usart_setup(void) {
 	usart_enable(USART1);
 }
 
+
 int main()
 {
 	/* Set GPIO3 and GPIO4 (in GPIO port C) to 'output push-pull'. */
@@ -152,14 +153,22 @@ int main()
 
 	Modbus *modbus = new Modbus();
 
+	uint16_t value_coil_1 = 0;
 
-while(true) {
+	while(true) {
 
 		modbus->poll();
-		usart_send(USART1, 'f');
 
-		//modbus->get_register(COIL, 2, value_coil);
 
+
+
+		modbus->get_register(COIL, 1, value_coil_1);
+
+		if( value_coil_1 ) {
+				gpio_set(GPIOA, GPIO1);
+		}
+		else
+			gpio_clear(GPIOA, GPIO1);
 
 
 	//usart_send(USART1, 'H');
