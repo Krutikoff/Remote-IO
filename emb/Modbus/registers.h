@@ -18,7 +18,8 @@ typedef enum {
 	COIL,
 	DISCRETE,
 	HOLDING,
-	INPUT
+	INPUT,
+	ERROR
 
 } RegisterType;
 

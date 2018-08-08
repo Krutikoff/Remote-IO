@@ -109,7 +109,7 @@ vMBPortTimersDisable(  )
 
 void tim2_isr(void)
 {
-	gpio_toggle(GPIOA, GPIO0);   /* LED2 on/off. */
+	//gpio_toggle(GPIOA, GPIO0);   /* LED2 on/off. */
 
 	//TIM_SR(TIM2) &= ~TIM_SR_UIF; /* Clear interrrupt flag. */
 

@@ -1,28 +1,17 @@
-#include <Modbus/modbus.h>
-
-#define REG_COIL_START				0x0001
-#define REG_COIL_NREGS				32
-/*static*/ USHORT usRegCoilStart = REG_COIL_START;
-/*static*/ BOOL   usRegCoilBuf[REG_COIL_NREGS] = {0};
-
-#define REG_DISCRETE_START			0x1001
-#define REG_DISCRETE_NREGS			24
-/*static*/ USHORT usRegDiscreteStart = REG_DISCRETE_START;
-/*static*/ BOOL   usRegDiscreteBuf[REG_DISCRETE_NREGS] = {0};
-
-#define REG_HOLDING_START			0x4001
-#define REG_HOLDING_NREGS			3
-/*static*/ USHORT usRegHoldingStart = REG_HOLDING_START;
-/*static*/ USHORT usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
+#include "modbus.h"
 
 
-#define REG_INPUT_START			0x3001
-#define REG_INPUT_NREGS			9
-/*static*/ USHORT usRegInputStart = REG_INPUT_START;
-/*static*/ USHORT usRegInputBuf[REG_INPUT_NREGS] = {0};
+USHORT Modbus::usRegCoilStart = REG_COIL_START;
+BOOL   Modbus::usRegCoilBuf[REG_COIL_NREGS] = {0};
 
+USHORT Modbus::usRegDiscreteStart = REG_DISCRETE_START;
+BOOL   Modbus::usRegDiscreteBuf[REG_DISCRETE_NREGS] = {0};
 
+USHORT Modbus::usRegHoldingStart = REG_HOLDING_START;
+USHORT Modbus::usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
 
+USHORT Modbus::usRegInputStart = REG_INPUT_START;
+USHORT Modbus::usRegInputBuf[REG_INPUT_NREGS] = {0};
 
 Modbus::Modbus() {
 
@@ -61,7 +50,7 @@ void Modbus::poll()
 
 }
 
-void Modbus::set_register(RegisterType type, uint8_t address, uint16_t value)
+void Modbus::set_register(RegisterType type, uint32_t address, uint16_t value)
 {
 	if ( (type == COIL) && (address < REG_COIL_NREGS) ) {
 		usRegCoilBuf[address] = value;
@@ -81,7 +70,7 @@ void Modbus::set_register(RegisterType type, uint8_t address, uint16_t value)
 
 }*/
 
-Modbus::Error Modbus::get_register(RegisterType type, uint8_t address, uint16_t &value)
+Modbus::Error Modbus::get_register(RegisterType type, uint32_t address, uint16_t &value)
 {
 
 	if ( (type == COIL) && (address < REG_COIL_NREGS) ) {
@@ -103,9 +92,28 @@ Modbus::Error Modbus::get_register(RegisterType type, uint8_t address, uint16_t 
 	return Error::MB_ENOERR;
 }
 
+RegisterType Modbus::_get_type(uint32_t address){
+	RegisterType type;
+
+	if(address >= REG_COIL_START && address <= REG_COIL_START + REG_COIL_NREGS){
+		return type = RegisterType::COIL;
+	}
+	else if(address >= REG_DISCRETE_START && address <= REG_DISCRETE_START + REG_DISCRETE_NREGS) {
+		return type = RegisterType::DISCRETE;
+	}
+	else if(address >= REG_HOLDING_START && address <= REG_HOLDING_START + REG_HOLDING_NREGS){
+		return type = RegisterType::HOLDING;
+	}
+	else if(address >= REG_INPUT_START && address <= REG_INPUT_START + REG_INPUT_NREGS){
+		return type = RegisterType::INPUT;
+	}
+	else
+		return RegisterType::ERROR;
+}
+
 
 /**************************************************************/
-/**********************  USER CODE ****************************/
+/**********************  MODBUS FUNCTION CODE ****************************/
 /**************************************************************/
 
 eMBErrorCode    eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress,
@@ -113,14 +121,15 @@ eMBErrorCode    eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress,
 	eMBErrorCode    eStatus = MB_ENOERR;
 	int             iRegIndex;
 
-	if( ( usAddress >= REG_INPUT_START )
-		&& ( usAddress + usNRegs <= REG_INPUT_START + REG_INPUT_NREGS ) )
+	Modbus& modbus = Modbus::instance();
+	if( ( usAddress >= modbus.REG_INPUT_START )
+		&& ( usAddress + usNRegs <= modbus.REG_INPUT_START + modbus.REG_INPUT_NREGS ) )
 	{
-		iRegIndex = ( int )( usAddress - usRegInputStart );
+		iRegIndex = ( int )( usAddress - modbus.usRegInputStart );
 		while( usNRegs > 0 )
 		{
-			*pucRegBuffer++ = ( unsigned char )( usRegInputBuf[iRegIndex] >> 8 );
-			*pucRegBuffer++ = ( unsigned char )( usRegInputBuf[iRegIndex] & 0xFF );
+			*pucRegBuffer++ = ( unsigned char )( modbus.usRegInputBuf[iRegIndex] >> 8 );
+			*pucRegBuffer++ = ( unsigned char )( modbus.usRegInputBuf[iRegIndex] & 0xFF );
 			iRegIndex++;
 			usNRegs--;
 		}
@@ -138,16 +147,18 @@ eMBErrorCode    eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress,
 	eMBErrorCode    eStatus = MB_ENOERR;
 	int             iRegIndex;
 
-	if( ( usAddress >= REG_HOLDING_START ) && ( usAddress + usNRegs <= REG_HOLDING_START + REG_HOLDING_NREGS ) )
+
+	Modbus& modbus = Modbus::instance();
+	if( ( usAddress >= modbus.REG_HOLDING_START ) && ( usAddress + usNRegs <= modbus.REG_HOLDING_START + modbus.REG_HOLDING_NREGS ) )
 	{
-		iRegIndex = ( int )( usAddress - usRegHoldingStart );
+		iRegIndex = ( int )( usAddress - modbus.usRegHoldingStart );
 		switch ( eMode )
 		{
 		case MB_REG_READ:
 			while( usNRegs > 0 )
 			{
-				*pucRegBuffer++ = ( unsigned char )( usRegHoldingBuf[iRegIndex] >> 8 );
-				*pucRegBuffer++ = ( unsigned char )( usRegHoldingBuf[iRegIndex] & 0xFF );
+				*pucRegBuffer++ = ( unsigned char )( modbus.usRegHoldingBuf[iRegIndex] >> 8 );
+				*pucRegBuffer++ = ( unsigned char )( modbus.usRegHoldingBuf[iRegIndex] & 0xFF );
 				iRegIndex++;
 				usNRegs--;
 			}
@@ -156,8 +167,8 @@ eMBErrorCode    eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress,
 		case MB_REG_WRITE:
 			while( usNRegs > 0 )
 			{
-				usRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
-				usRegHoldingBuf[iRegIndex] |= *pucRegBuffer++;
+				modbus.usRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
+				modbus.usRegHoldingBuf[iRegIndex] |= *pucRegBuffer++;
 				iRegIndex++;
 				usNRegs--;
 			}
@@ -175,15 +186,16 @@ eMBErrorCode    eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress,
 	eMBErrorCode    eStatus = MB_ENOERR;
 	int             iRegIndex;
 
-	if( ( usAddress >= REG_COIL_START ) && ( usAddress + usNCoils <= REG_COIL_START + REG_COIL_NREGS ) )
+	Modbus& modbus = Modbus::instance();
+	if( ( usAddress >= modbus.REG_COIL_START ) && ( usAddress + usNCoils <= modbus.REG_COIL_START + modbus.REG_COIL_NREGS ) )
 	{
-		iRegIndex = ( int )( usAddress - usRegCoilStart );
+		iRegIndex = ( int )( usAddress - modbus.usRegCoilStart );
 		switch ( eMode )
 		{
 		case MB_REG_READ:
 			while( usNCoils > 0 )
 			{
-				*pucRegBuffer++ = (unsigned char)(usRegCoilBuf[iRegIndex]);
+				*pucRegBuffer++ = (unsigned char)(modbus.usRegCoilBuf[iRegIndex]);
 				iRegIndex++;
 				usNCoils--;
 			}
@@ -192,7 +204,7 @@ eMBErrorCode    eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress,
 		case MB_REG_WRITE:
 			while( usNCoils > 0 )
 			{
-				usRegCoilBuf[iRegIndex] = *pucRegBuffer++;
+				modbus.usRegCoilBuf[iRegIndex] = *pucRegBuffer++;
 				iRegIndex++;
 				usNCoils--;
 			}
@@ -210,13 +222,14 @@ eMBErrorCode    eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress,
     eMBErrorCode    eStatus = MB_ENOERR;
     int             iRegIndex;
 
-    if( ( usAddress >= REG_DISCRETE_START )
-        && ( usAddress + usNDiscrete <= REG_DISCRETE_START + REG_DISCRETE_NREGS ) )
+    Modbus& modbus = Modbus::instance();
+    if( ( usAddress >= modbus.REG_DISCRETE_START )
+        && ( usAddress + usNDiscrete <= modbus.REG_DISCRETE_START + modbus.REG_DISCRETE_NREGS ) )
     {
-        iRegIndex = ( int )( usAddress - usRegDiscreteStart );
+        iRegIndex = ( int )( usAddress - modbus.usRegDiscreteStart );
         while( usNDiscrete > 0 )
         {
-        	*pucRegBuffer++ = (unsigned char)(usRegDiscreteBuf[iRegIndex]);
+        	*pucRegBuffer++ = (unsigned char)(modbus.usRegDiscreteBuf[iRegIndex]);
             //*pucRegBuffer++ = ( unsigned char )( usRegDiscreteBuf[iRegIndex] >> 8 );
             //*pucRegBuffer++ = ( unsigned char )( usRegDiscreteBuf[iRegIndex] & 0xFF );
             iRegIndex++;
@@ -230,11 +243,6 @@ eMBErrorCode    eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress,
 
     return eStatus;
 }
-
-
-
-
-
 
 
 

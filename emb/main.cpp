@@ -6,6 +6,9 @@
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/usart.h>
 
+#include <iterator>
+#include <algorithm>
+
 
 void Conf_PWM_TIM(uint32_t tim) {
 	timer_set_mode(tim, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_CENTER_1,
@@ -65,8 +68,8 @@ void rcc_clock_config ( void ) {
 }
 
 void led_setup( void ) {
-	gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO0 | GPIO1);
-	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO3 | GPIO4 );
+	gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO0 | GPIO1 | GPIO2 | GPIO3);
+	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO6 | GPIO7 | GPIO8 | GPIO9 );
 }
 
 void nvic_setup( void) {
@@ -130,9 +133,9 @@ int main()
 	// LED PIN: PA1, PA2, PA3, PB6, PB7, PB8, PB9
 
 	//gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO0 | GPIO1 | GPIO2 | GPIO3);
-	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO6 | GPIO7 | GPIO8 | GPIO9);
+	//gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO6 | GPIO7 | GPIO8 | GPIO9);
 	//gpio_set(GPIOA, GPIO0 | GPIO1 | GPIO2 | GPIO3);
-	gpio_set(GPIOB, GPIO6 | GPIO7 | GPIO8 | GPIO9);
+	//gpio_set(GPIOB, GPIO6 | GPIO7 | GPIO8 | GPIO9);
 
 	/*****************TIMER********************/
 	/* PA0 - TIM2_CH1
@@ -151,24 +154,94 @@ int main()
 	//Timer4.Config_PWM(TIM4);
 
 
-	Modbus *modbus = new Modbus();
+	Modbus& modbus = Modbus::instance();
 
-	uint16_t value_coil_1 = 0;
 
+
+	uint8_t arr_coil[7] = {1, 0, 1, 0, 1, 0, 1};
+	//uint8_t arr_coil_copy[4] = {0};
+	uint8_t* it = modbus.get_iterator <uint8_t>(0x0001);
+	std::copy_n(arr_coil, 7, it);
 	while(true) {
 
-		modbus->poll();
+		modbus.poll();
+
+		//br[0] = 0x01;
+
+		//char* const end = it + 5;
+		//const char* it_br = br;
 
 
 
+		RegisterType type_coil = modbus._get_type(0x0001);
+		RegisterType type_discrete = modbus._get_type(0x1001);
+		RegisterType type_input = modbus._get_type(0x3001);
+		RegisterType type_holding = modbus._get_type(0x4001);
 
-		modbus->get_register(COIL, 1, value_coil_1);
+		if(*it){
+			gpio_set(GPIOA, GPIO0);
+		}
+		else
+			gpio_clear(GPIOA, GPIO0);
 
-		if( value_coil_1 ) {
-				gpio_set(GPIOA, GPIO1);
+		if(*(it+1)){
+			gpio_set(GPIOA, GPIO1);
 		}
 		else
 			gpio_clear(GPIOA, GPIO1);
+
+		if(*(it+2)){
+			gpio_set(GPIOA, GPIO2);
+		}
+		else
+			gpio_clear(GPIOA, GPIO2);
+
+		if(*(it+3)){
+			gpio_set(GPIOA, GPIO3);
+		}
+		else
+			gpio_clear(GPIOA, GPIO3);
+		if(*(it+4)){
+			gpio_set(GPIOB, GPIO6);
+		}
+		else
+			gpio_clear(GPIOB, GPIO6);
+		if(*(it+5)){
+			gpio_set(GPIOB, GPIO7);
+		}
+		else
+			gpio_clear(GPIOB, GPIO7);
+		if(*(it+6)){
+			gpio_set(GPIOB, GPIO8);
+		}
+		else
+			gpio_clear(GPIOB, GPIO8);
+		if(*(it+7)){
+			gpio_set(GPIOB, GPIO9);
+		}
+		else
+			gpio_clear(GPIOB, GPIO9);
+
+
+		/*while(it != end){
+
+			*it++ = it_br++;
+		}*/
+
+
+
+//
+//		for(int i = 0; i < 4; i++){
+//
+//
+//		modbus.get_register(COIL, i, value_coil[i]);
+//
+//		if( value_coil[i] ) {
+//				gpio_set(GPIOA, 1 << i);
+//		}
+//		else
+//			gpio_clear(GPIOA, ~(1 << i));
+//	}
 
 
 	//usart_send(USART1, 'H');
