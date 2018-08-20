@@ -33,7 +33,7 @@ public:
 
 	static uint16_t* input_it_counter;
 
-	static uint32_t* holding_it_baudrate; // 16 * 2 = 32
+	static uint16_t* holding_it_baudrate; // 16 * 2 = 32
 
 
 	//uint8_t* discrete_it_read = get_iterator <uint8_t>(0x1001);
@@ -76,7 +76,7 @@ private:
 	static constexpr uint32_t REG_HOLDING_START = 0x4001;
 	static constexpr uint32_t REG_HOLDING_NREGS = 3;
 	static USHORT usRegHoldingStart;
-	static USHORT usRegHoldingBuf[REG_HOLDING_NREGS];
+	static USHORT usRegHoldingBuf[REG_HOLDING_NREGS]; //USHORT
 
 	static constexpr uint32_t REG_INPUT_START = 0x3001;
 	static constexpr uint32_t  REG_INPUT_NREGS = 9;

@@ -10,7 +10,7 @@ BOOL   Modbus::usRegDiscreteBuf[REG_DISCRETE_NREGS] = { 0, 0, 0, 0, 0, 0, 0, 0,
 														0, 0, 0, 0, 0, 0, 0, 0 };
 
 USHORT Modbus::usRegHoldingStart = REG_HOLDING_START;
-USHORT Modbus::usRegHoldingBuf[REG_HOLDING_NREGS] = {0};
+USHORT Modbus::usRegHoldingBuf[REG_HOLDING_NREGS] = {0}; //USHORT
 
 USHORT Modbus::usRegInputStart = REG_INPUT_START;
 USHORT Modbus::usRegInputBuf[REG_INPUT_NREGS] = {0};
@@ -29,7 +29,7 @@ uint8_t* Modbus::discrete_it_latch_high = _modbus_ptr->get_iterator <uint8_t>(0x
 
 uint16_t* Modbus::input_it_counter = _modbus_ptr->get_iterator <uint16_t>(0x3001);
 
-uint32_t* Modbus::holding_it_baudrate = _modbus_ptr->get_iterator <uint32_t>(0x4001);
+uint16_t* Modbus::holding_it_baudrate = _modbus_ptr->get_iterator <uint16_t>(0x4001);
 
 
 Modbus::Modbus() {
@@ -234,8 +234,6 @@ void Modbus::mb_gpio_write(uint8_t* coil_data_write) {
 		}
 		else
 			gpio_clear(GPIOA, GPIO1);
-
-
 	}
 
 	if(config_write[2]) {
@@ -245,8 +243,6 @@ void Modbus::mb_gpio_write(uint8_t* coil_data_write) {
 		}
 		else
 			gpio_clear(GPIOA, GPIO2);
-
-
 	}
 
 	if(config_write[3]) {
@@ -255,8 +251,6 @@ void Modbus::mb_gpio_write(uint8_t* coil_data_write) {
 		}
 		else
 			gpio_clear(GPIOA, GPIO3);
-
-
 	}
 
 	if(config_write[4]) {
@@ -265,8 +259,6 @@ void Modbus::mb_gpio_write(uint8_t* coil_data_write) {
 		}
 		else
 			gpio_clear(GPIOB, GPIO6);
-
-
 	}
 
 	if(config_write[5]) {
@@ -275,8 +267,6 @@ void Modbus::mb_gpio_write(uint8_t* coil_data_write) {
 		}
 		else
 			gpio_clear(GPIOB, GPIO7);
-
-
 	}
 
 	if(config_write[6]) {
@@ -285,8 +275,6 @@ void Modbus::mb_gpio_write(uint8_t* coil_data_write) {
 		}
 		else
 			gpio_clear(GPIOB, GPIO8);
-
-
 	}
 
 	if(config_write[7]) {
@@ -295,8 +283,6 @@ void Modbus::mb_gpio_write(uint8_t* coil_data_write) {
 		}
 		else
 			gpio_clear(GPIOB, GPIO9);
-
-
 	}
 }
 
@@ -317,8 +303,6 @@ void Modbus::mb_latch_high(uint8_t* input_latch_high) {
 }
 
 void Modbus::mb_latch_clear() {
-
-
 
 	uint8_t clear_low[8] = {1, 1, 1, 1, 1, 1, 1, 1};
 	uint8_t clear_high[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -382,24 +366,14 @@ void Modbus::mb_baudrate_set(){
 	Modbus& modbus = Modbus::instance();
 
 	if(modbus.baudrate != *modbus.holding_it_baudrate) {
+
+		nvic_disable_irq(MODBUS_IRQ);
+		usart_disable(MODBUS_UART);
 		modbus.baudrate = *modbus.holding_it_baudrate;
-
-		eMBErrorCode status;
-
-		status = eMBInit(eMBMode::MB_RTU, modbus_address_device, 0, modbus.baudrate, MB_PAR_NONE);
-		if(status != eMBErrorCode::MB_ENOERR) {
-				__asm("nop");
-		}
-
-		status = eMBEnable(  );
-		if(status != eMBErrorCode::MB_ENOERR) {
-					__asm("nop");
-		}
-
-
-
+		usart_set_baudrate(MODBUS_UART, modbus.baudrate);
+		nvic_enable_irq(MODBUS_IRQ);
+		usart_enable(MODBUS_UART);
 	}
-
 }
 
 void exti0_isr(void){
@@ -453,7 +427,6 @@ void exti1_isr(void){
 		//latch_low_1 = true;
 		modbus.discrete_it_latch_high[1] = 1;
 		modbus.discrete_it_latch_low[1] = 1;
-
 	}
 
 	if(latch_high_1 && latch_low_1) {
@@ -533,7 +506,6 @@ void exti3_isr(void){
 		latch_low_3 = false;
 		latch_high_3 = false;
 	}
-
 	modbus.discrete_it_read[3] = (uint8_t)(gpio_get(GPIOC, GPIO3) >> 3);
 }
 
@@ -567,8 +539,6 @@ void exti4_isr(void){
 		latch_low_4 = false;
 		latch_high_4 = false;
 	}
-
-
 	modbus.discrete_it_read[4] = (uint8_t)(gpio_get(GPIOC, GPIO4) >> 4);
 }
 
@@ -611,7 +581,6 @@ void exti9_5_isr(void){
 			latch_low_5 = false;
 			latch_high_5 = false;
 		}
-
 		modbus.discrete_it_read[5] = (uint8_t)(gpio_get(GPIOC, GPIO5) >> 5);
 		//*_modbus_ptr->discrete_it_read = gpio_get(GPIOC, GPIO5); OTHER VARIANT
 	}
@@ -641,7 +610,6 @@ void exti9_5_isr(void){
 			latch_low_6 = false;
 			latch_high_6 = false;
 		}
-
 		modbus.discrete_it_read[6] = (uint8_t)(gpio_get(GPIOC, GPIO6) >> 6);
 	}
 	else if(exti_get_flag_status(EXTI7)) {
@@ -670,11 +638,9 @@ void exti9_5_isr(void){
 			latch_low_7 = false;
 			latch_high_7 = false;
 		}
-
 		modbus.discrete_it_read[7] = (uint8_t)(gpio_get(GPIOC, GPIO7) >> 7);
 
 	}
-
 }
 
 
