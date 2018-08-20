@@ -44,6 +44,7 @@ xMBPortTimersInit( USHORT usTim1Timerout50us )
 #if 1
 	rcc_periph_clock_enable(RCC_TIM2);
 	nvic_enable_irq(NVIC_TIM2_IRQ);
+	nvic_set_priority(NVIC_TIM2_IRQ, 1);
 
 	/* Timer global mode: - Divider 1, Alignment edge, Direction up */
 	timer_set_mode(TIM2, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
