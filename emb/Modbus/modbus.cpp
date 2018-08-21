@@ -29,7 +29,7 @@ uint8_t* Modbus::discrete_it_latch_high = _modbus_ptr->get_iterator <uint8_t>(0x
 
 uint16_t* Modbus::input_it_counter = _modbus_ptr->get_iterator <uint16_t>(0x3001);
 
-uint16_t* Modbus::holding_it_baudrate = _modbus_ptr->get_iterator <uint16_t>(0x4001);
+uint32_t* Modbus::holding_it_baudrate = _modbus_ptr->get_iterator <uint32_t>(0x4001);
 
 
 Modbus::Modbus() {

@@ -33,7 +33,7 @@ public:
 
 	static uint16_t* input_it_counter;
 
-	static uint16_t* holding_it_baudrate; // 16 * 2 = 32
+	static uint32_t* holding_it_baudrate; // 16 * 2 = 32
 
 
 	//uint8_t* discrete_it_read = get_iterator <uint8_t>(0x1001);
