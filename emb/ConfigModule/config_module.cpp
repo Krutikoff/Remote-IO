@@ -10,6 +10,10 @@ void Module::rcc_clock_config () {
 	rcc_periph_clock_enable(rcc_periph_clken::RCC_AFIO);
 }
 
+void Module::remap(){
+	 //gpio_primary_remap( AFIO_MAPR_SWJ_CFG_FULL_SWJ,AFIO_MAPR_SWJ_MASK);
+	AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_JTAG_OFF_SW_ON;
+}
 
 void Module::mb_gpio_config(){
 	// Конфигурация GPIO на выход портов A, B
@@ -46,7 +50,10 @@ void Module::mb_exti_config(){
 
 void  Module::led_setup() {
 	gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO0 | GPIO1 | GPIO2 | GPIO3);
-	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO6 | GPIO7 | GPIO8 | GPIO9 );
+	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO6 | GPIO7 | GPIO8 | GPIO9);
+
+	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO3 | GPIO4 );
+	gpio_set(GPIOB, GPIO3 | GPIO4);
 }
 
 void Module::tim3_config() { // НЕ ВЫЗЫВАЕТСЯ

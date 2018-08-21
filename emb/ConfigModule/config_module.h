@@ -17,7 +17,7 @@ public:
 	void rcc_clock_config ();
 	void mb_gpio_config();
 	void mb_exti_config();
-
+	void remap();
 	void led_setup();
 
 	void Conf_PWM_TIM(uint32_t tim);

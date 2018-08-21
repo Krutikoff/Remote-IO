@@ -6,6 +6,8 @@
 
 #include <ConfigModule/config_module.h>
 
+#include <etl/queue.h>
+
 uint8_t* Modbus::coils_it_gpio_set;
 uint8_t* Modbus::coils_it_gpio_write;
 uint8_t* Modbus::coils_it_latch_clear;
@@ -30,6 +32,7 @@ int main()
 	Module module;
 
 	module.rcc_clock_config();
+	//module.remap(); REMAP FUNCRION
 	module.led_setup();
 	//nvic_setup();
 	//gpio_clear(GPIOA, GPIO0);
@@ -37,6 +40,8 @@ int main()
 	//usart_setup();
 
 	module.mb_gpio_config();
+
+	etl::queue<int, 3> queue;
 
 	Modbus& modbus = Modbus::instance();
 
