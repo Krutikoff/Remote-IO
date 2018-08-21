@@ -69,7 +69,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/freemodbus/modbus/include/&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Modbus/port/&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/etl-master/include/&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/lib/etl/include/&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs.300894553" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.defs" useByScannerDiscovery="true" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="STM32F1"/>
@@ -118,7 +118,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="lib/etl-master|lib/etl-master/test|lib/etl-master/support|lib/etl-master/temp|lib/etl-master/uml|lib/etl-master/examples|lib/freemodbus/modbus/ascii|lib/freemodbus/modbus/tcp|lib/freemodbus/doc|lib/freemodbus/tools|lib/FreeModbusOld|lib/libopencm3|lib/freemodbus/demo" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="lib/etl/src/c|lib/etl/test|lib/etl/uml|lib/etl/temp|lib/etl/support|lib/etl/examples|lib/freemodbus/modbus/tcp|lib/libopencm3|lib/etl-master/support|lib/freemodbus/modbus/ascii|lib/etl-master|lib/etl-master/uml|lib/freemodbus/doc|lib/freemodbus/tools|lib/FreeModbusOld|lib/etl-master/examples|lib/freemodbus/demo|lib/etl-master/test|lib/etl-master/temp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -214,7 +214,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="lib/etl-master|lib/etl-master/test|lib/etl-master/support|lib/etl-master/temp|lib/etl-master/uml|lib/etl-master/examples|lib/freemodbus/modbus/ascii|lib/freemodbus/modbus/tcp|lib/freemodbus/doc|lib/freemodbus/tools|lib/FreeModbusOld|lib/libopencm3|lib/freemodbus/demo" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="lib/etl/src/c|lib/etl/test|lib/etl/uml|lib/etl/temp|lib/etl/support|lib/etl/examples|lib/freemodbus/modbus/tcp|lib/libopencm3|lib/etl-master/support|lib/freemodbus/modbus/ascii|lib/etl-master|lib/etl-master/uml|lib/freemodbus/doc|lib/freemodbus/tools|lib/FreeModbusOld|lib/etl-master/examples|lib/freemodbus/demo|lib/etl-master/test|lib/etl-master/temp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
