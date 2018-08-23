@@ -7,7 +7,7 @@ class UsartModule
 public:
     enum Action
     {
-        WRITE, READ, SET,
+
     };
 
     struct Message

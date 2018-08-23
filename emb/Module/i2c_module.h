@@ -7,7 +7,7 @@ class I2cModule
 public:
     enum Action
     {
-        WRITE, READ, SET,
+
     };
 
     struct Message
