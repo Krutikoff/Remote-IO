@@ -1,10 +1,8 @@
-#ifndef Registers_H
-#define Registers_H
-
-//pragma once
+#pragma once
 
 #include <mb.h>
-
+#include "modbus.h"
+#include <cstdint>
 
 
 
@@ -13,18 +11,12 @@
 //#include <stdint.h>
 
 
-/* Registers protocol Modbus */
-typedef enum {
-	COIL,
-	DISCRETE,
-	HOLDING,
-	INPUT,
-	ERROR
 
-} RegisterType;
 
-typedef enum : uint8_t {
-	GPIO_SET_BIT0,
+
+
+typedef enum : uint32_t {
+	GPIO_SET_BIT0 = Modbus::REG_COIL_START,
 	GPIO_SET_BIT1,
 	GPIO_SET_BIT2,
 	GPIO_SET_BIT3,
@@ -58,8 +50,8 @@ typedef enum : uint8_t {
 	I2C_TXE
 }Coil;
 
-typedef enum : uint8_t {
-	GPIO_READ_BIT0,
+typedef enum : uint32_t {
+	GPIO_READ_BIT0 /*= Modbus::REG_DISCRETE_START*/,
 	GPIO_READ_BIT1,
 	GPIO_READ_BIT2,
 	GPIO_READ_BIT3,
@@ -86,8 +78,8 @@ typedef enum : uint8_t {
 }Discrete;
 
 
-typedef enum : uint8_t {
-	COUNTER0_VALUE,
+typedef enum : uint32_t {
+	COUNTER0_VALUE/* = Modbus::REG_INPUT_START*/,
 	COUNTER1_VALUE,
 	COUNTER2_VALUE,
 	COUNTER3_VALUE,
@@ -98,8 +90,8 @@ typedef enum : uint8_t {
 	I2C_RX_DATA
 }Input;
 
-typedef enum : uint8_t {
-	UART_BAUDRATE_0,
+typedef enum : uint32_t {
+	UART_BAUDRATE_0/* = Modbus::REG_HOLDING_START*/,
 	UART_BAUDRATE_1,
 	I2C_TX_DATA
 }Holding;
@@ -107,4 +99,3 @@ typedef enum : uint8_t {
 
 
 
-#endif /* REGISTERS_H_ */
