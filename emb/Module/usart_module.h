@@ -20,7 +20,7 @@ public:
     using Queue = etl::queue<Message, 7>;
 
     void run();
-
+    Queue* get_queue() { return &_queue;}
 private:
     Queue _queue;
 };
