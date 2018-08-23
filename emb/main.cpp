@@ -57,7 +57,7 @@ int main()
 
         modbus.mb_gpio_set(modbus.coils_it_gpio_set);
 
-        modbus.mb_gpio_write(modbus.coils_it_gpio_write);
+        //modbus.mb_gpio_write(modbus.coils_it_gpio_write);
 
         if (*modbus.coils_it_latch_clear) {
             modbus.mb_latch_clear();
