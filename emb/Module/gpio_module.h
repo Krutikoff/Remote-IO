@@ -5,6 +5,8 @@
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/exti.h>
 
+
+
 class GpioModule
 {
  public:
@@ -64,16 +66,15 @@ class GpioModule
 
     using Queue = etl::queue<Message, 7>;
 
+
+    GpioModule();
+
+
     void run();
     Queue* get_queue() { return &_queue; }
+    //auto get_gpio() { return _gpio; } // GpioIO* get_gpio() { return _gpio; } ERROR?
 
 
-
-
- private:
-    Queue _queue;
-    etl::array<uint8_t, 8> _cached_gpio_write = { 0 };
-    etl::array<uint8_t, 8> _exti = { EXTI0, EXTI1, EXTI2, EXTI3, EXTI4, EXTI5, EXTI6, EXTI7 };
     etl::array<GpioIO, 8> _gpio = {{
       {GpioMode::READ, {GPIOA, GPIO0}, {GPIOC, GPIO0} },
       {GpioMode::READ, {GPIOA, GPIO1}, {GPIOC, GPIO1} },
@@ -84,6 +85,14 @@ class GpioModule
       {GpioMode::READ, {GPIOB, GPIO8}, {GPIOC, GPIO6} },
       {GpioMode::READ, {GPIOB, GPIO9}, {GPIOC, GPIO7} }
     }};
+
+    etl::array<uint8_t, 8> _exti = { EXTI0, EXTI1, EXTI2, EXTI3, EXTI4, EXTI5, EXTI6, EXTI7 };
+
+ private:
+    Queue _queue;
+    etl::array<uint8_t, 8> _cached_gpio_write = { 0 };
+
+
 
     void _dispatch_queue();
     void _polling_gpio_registers();

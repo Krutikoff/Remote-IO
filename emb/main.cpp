@@ -10,8 +10,8 @@
 #include <Module/usart_module.h>
 #include <Module/i2c_module.h>
 
-uint8_t* Modbus::coils_it_gpio_set;
-uint8_t* Modbus::coils_it_gpio_write;
+//uint8_t* Modbus::coils_it_gpio_set;
+//uint8_t* Modbus::coils_it_gpio_write;
 uint8_t* Modbus::coils_it_latch_clear;
 
 int main()
@@ -20,9 +20,9 @@ int main()
     GpioModule gpio_module;
     UsartModule usart_module;
     I2cModule i2c_module;
-    PollingRegistersModule polling_registers(gpio_module.get_queue(),
-                                             usart_module.get_queue(),
-                                             i2c_module.get_queue());
+//    PollingRegistersModule polling_registers(gpio_module.get_queue(),
+//                                             usart_module.get_queue(),
+//                                             i2c_module.get_queue());
 
     module.rcc_clock_config();
     //module.remap(); REMAP FUNCRION
@@ -40,22 +40,23 @@ int main()
 
     module.mb_exti_config();
 
-    modbus.coils_it_gpio_set = modbus.get_iterator<uint8_t>(0x0001);
-    modbus.coils_it_gpio_write = modbus.get_iterator<uint8_t>(0x0009);
+//    modbus.coils_it_gpio_set = modbus.get_iterator<uint8_t>(0x0001);
+//    modbus.coils_it_gpio_write = modbus.get_iterator<uint8_t>(0x0009);
     modbus.coils_it_latch_clear = modbus.get_iterator<uint8_t>(0x0011);
 
     //std::queue<message_queue_gpio> queue_gpio;
 
     while (true) {
 
+
         modbus.poll();
 
-        polling_registers.run();
+        //polling_registers.run();
         gpio_module.run();
         usart_module.run();
         i2c_module.run();
 
-        modbus.mb_gpio_set(modbus.coils_it_gpio_set);
+//        modbus.mb_gpio_set(modbus.coils_it_gpio_set);
 
         //modbus.mb_gpio_write(modbus.coils_it_gpio_write);
 
