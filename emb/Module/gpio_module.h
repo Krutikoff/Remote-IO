@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <etl/queue.h>
 #include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/exti.h>
 
 class GpioModule
 {
@@ -48,14 +49,43 @@ class GpioModule
         uint32_t value;
     };
 
+    struct PortPin
+    {
+        uint32_t gpio_port;
+        uint16_t gpio_pin;
+    };
+
+    struct GpioIO
+    {
+        GpioMode mode;
+        PortPin port_write;
+        PortPin port_read;
+    };
+
     using Queue = etl::queue<Message, 7>;
 
     void run();
     Queue* get_queue() { return &_queue; }
 
+
+
+
  private:
     Queue _queue;
-    Message _cache_gpio_module_msg;
+    etl::array<uint8_t, 8> _cached_gpio_write = { 0 };
+    etl::array<uint8_t, 8> _exti = { EXTI0, EXTI1, EXTI2, EXTI3, EXTI4, EXTI5, EXTI6, EXTI7 };
+    etl::array<GpioIO, 8> _gpio = {{
+      {GpioMode::READ, {GPIOA, GPIO0}, {GPIOC, GPIO0} },
+      {GpioMode::READ, {GPIOA, GPIO1}, {GPIOC, GPIO1} },
+      {GpioMode::READ, {GPIOA, GPIO2}, {GPIOC, GPIO2} },
+      {GpioMode::READ, {GPIOA, GPIO3}, {GPIOC, GPIO3} },
+      {GpioMode::READ, {GPIOB, GPIO6}, {GPIOC, GPIO4} },
+      {GpioMode::READ, {GPIOB, GPIO7}, {GPIOC, GPIO5} },
+      {GpioMode::READ, {GPIOB, GPIO8}, {GPIOC, GPIO6} },
+      {GpioMode::READ, {GPIOB, GPIO9}, {GPIOC, GPIO7} }
+    }};
 
     void _dispatch_queue();
+    void _polling_gpio_registers();
+
 };
