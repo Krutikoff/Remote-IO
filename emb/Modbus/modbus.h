@@ -43,8 +43,8 @@ public:
     bool config_read[8] = { true }; // Set read mode default
     uint32_t baudrate = 0;
 
-    static uint8_t* coils_it_gpio_set;
-    static uint8_t* coils_it_gpio_write;
+//    static uint8_t* coils_it_gpio_set;
+//    static uint8_t* coils_it_gpio_write;
     static uint8_t* coils_it_latch_clear;
     static uint8_t* coils_it_counter_clear;
 

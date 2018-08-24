@@ -372,266 +372,266 @@ void Modbus::mb_baudrate_set()
     }
 }
 
-void exti0_isr(void)
-{
-    exti_reset_request(EXTI0); // —бросили флаг
-
-    Modbus& modbus = Modbus::instance();
-
-    static bool latch_low_0 = false;
-    static bool latch_high_0 = false;
-
-    if (GPIOC_IDR & (GPIO0)) { // LATCH_LOW
-        latch_high_0 = true;
-        modbus.discrete_it_latch_low[0] = 0;
-        modbus.discrete_it_latch_high[0] = 0;
-    }
-    else { // LATCH_HIGH
-        latch_low_0 = true;
-        modbus.discrete_it_latch_high[0] = 1;
-        modbus.discrete_it_latch_low[0] = 1;
-    }
-
-    if (latch_high_0 && latch_low_0) {
-
-        modbus.input_it_counter[0]++;
-        if (modbus.input_it_counter[0] > 65534) modbus.input_it_counter[0] = 0;
-
-        latch_low_0 = false;
-        latch_high_0 = false;
-    }
-
-    modbus.discrete_it_read[0] = (uint8_t) (gpio_get(GPIOC, GPIO0)); // READ_GPIO
-}
-
-void exti1_isr(void)
-{
-    exti_reset_request(EXTI1); // —бросили флаг
-
-    Modbus& modbus = Modbus::instance();
-
-    static bool latch_low_1 = false;
-    static bool latch_high_1 = false;
-
-    if (GPIOC_IDR & (GPIO1)) { // LATCH_HIGH
-        //latch_high_1 = true;
-
-        modbus.discrete_it_latch_low[1] = 0;
-        modbus.discrete_it_latch_high[1] = 0;
-    }
-    else { // LATCH_LOW
-           //latch_low_1 = true;
-        modbus.discrete_it_latch_high[1] = 1;
-        modbus.discrete_it_latch_low[1] = 1;
-    }
-
-    if (latch_high_1 && latch_low_1) {
-
-        modbus.input_it_counter[1]++;
-        if (modbus.input_it_counter[1] > 65534) modbus.input_it_counter[1] = 0;
-
-        latch_low_1 = false;
-        latch_high_1 = false;
-    }
-
-    modbus.discrete_it_read[1] = (uint8_t) (gpio_get(GPIOC, GPIO1) >> 1);
-}
-
-void exti2_isr(void)
-{
-    exti_reset_request(EXTI2); // —бросили флаг
-
-    Modbus& modbus = Modbus::instance();
-
-    static bool latch_low_2 = false;
-    static bool latch_high_2 = false;
-
-    if (GPIOC_IDR & (GPIO2)) { // LATCH_HIGH
-        latch_high_2 = true;
-
-        modbus.discrete_it_latch_high[2] = 0;
-        modbus.discrete_it_latch_low[2] = 0;
-    }
-    else { // LATCH_LOW
-        latch_low_2 = true;
-
-        modbus.discrete_it_latch_high[2] = 1;
-        modbus.discrete_it_latch_low[2] = 1;
-    }
-
-    if (latch_high_2 && latch_low_2) {
-
-        modbus.input_it_counter[2]++;
-        if (modbus.input_it_counter[2] > 65534) modbus.input_it_counter[2] = 0;
-
-        latch_low_2 = false;
-        latch_high_2 = false;
-    }
-
-    modbus.discrete_it_read[2] = (uint8_t) (gpio_get(GPIOC, GPIO2) >> 2);
-}
-
-void exti3_isr(void)
-{
-    exti_reset_request(EXTI3); // —бросили флаг
-
-    Modbus& modbus = Modbus::instance();
-
-    static bool latch_low_3 = false;
-    static bool latch_high_3 = false;
-
-    if (GPIOC_IDR & (GPIO3)) { // LATCH_HIGH
-        latch_high_3 = true;
-
-        modbus.discrete_it_latch_high[3] = 0;
-        modbus.discrete_it_latch_low[3] = 0;
-    }
-    else { // LATCH_LOW
-        latch_low_3 = true;
-
-        modbus.discrete_it_latch_high[3] = 1;
-        modbus.discrete_it_latch_low[3] = 1;
-    }
-
-    if (latch_high_3 && latch_low_3) {
-
-        modbus.input_it_counter[3]++;
-        if (modbus.input_it_counter[3] > 65534) modbus.input_it_counter[3] = 0;
-
-        latch_low_3 = false;
-        latch_high_3 = false;
-    }
-    modbus.discrete_it_read[3] = (uint8_t) (gpio_get(GPIOC, GPIO3) >> 3);
-}
-
-void exti4_isr(void)
-{
-    exti_reset_request(EXTI4); // —бросили флаг
-
-    Modbus& modbus = Modbus::instance();
-
-    static bool latch_low_4 = false;
-    static bool latch_high_4 = false;
-
-    if (GPIOC_IDR & (GPIO4)) { // LATCH_HIGH
-        //latch_high_4 = true;
-
-        modbus.discrete_it_latch_high[4] = 0;
-        modbus.discrete_it_latch_low[4] = 0;
-    }
-    else { // LATCH_LOW
-           //latch_low_4 = true;
-
-        modbus.discrete_it_latch_high[4] = 1;
-        modbus.discrete_it_latch_low[4] = 1;
-    }
-
-    if (latch_high_4 && latch_low_4) {
-
-        modbus.input_it_counter[4]++;
-        if (modbus.input_it_counter[4] > 65534) modbus.input_it_counter[4] = 0;
-
-        latch_low_4 = false;
-        latch_high_4 = false;
-    }
-    modbus.discrete_it_read[4] = (uint8_t) (gpio_get(GPIOC, GPIO4) >> 4);
-}
-
-void exti9_5_isr(void)
-{
-
-    static bool latch_low_5 = false;
-    static bool latch_high_5 = false;
-
-    static bool latch_low_6 = false;
-    static bool latch_high_6 = false;
-
-    static bool latch_low_7 = false;
-    static bool latch_high_7 = false;
-
-    Modbus& modbus = Modbus::instance();
-
-    if (exti_get_flag_status(EXTI5)) {
-        exti_reset_request(EXTI5); // —бросили флаг
-
-        if (gpio_get(GPIOC, GPIO5)) {
-            latch_high_5 = true;
-
-            modbus.discrete_it_latch_high[5] = 0;
-            modbus.discrete_it_latch_low[5] = 0;
-        }
-        else {
-            latch_low_5 = true;
-
-            modbus.discrete_it_latch_high[5] = 1;
-            modbus.discrete_it_latch_low[5] = 1;
-        }
-
-        if (latch_high_5 && latch_low_5) {
-
-            modbus.input_it_counter[5]++;
-            if (modbus.input_it_counter[5] > 65534) modbus.input_it_counter[5] = 0;
-
-            latch_low_5 = false;
-            latch_high_5 = false;
-        }
-        modbus.discrete_it_read[5] = (uint8_t) (gpio_get(GPIOC, GPIO5) >> 5);
-        //*_modbus_ptr->discrete_it_read = gpio_get(GPIOC, GPIO5); OTHER VARIANT
-    }
-    else if (exti_get_flag_status(EXTI6)) {
-        exti_reset_request(EXTI6);
-
-        if (gpio_get(GPIOC, GPIO6)) {
-            latch_high_6 = true;
-
-            modbus.discrete_it_latch_high[6] = 0;
-            modbus.discrete_it_latch_low[6] = 0;
-        }
-        else {
-            latch_low_6 = true;
-
-            modbus.discrete_it_latch_high[6] = 1;
-            modbus.discrete_it_latch_low[6] = 1;
-        }
-
-        if (latch_high_6 && latch_low_6) {
-
-            modbus.input_it_counter[6]++;
-            if (modbus.input_it_counter[6] > 65534) modbus.input_it_counter[6] = 0;
-
-            latch_low_6 = false;
-            latch_high_6 = false;
-        }
-        modbus.discrete_it_read[6] = (uint8_t) (gpio_get(GPIOC, GPIO6) >> 6);
-    }
-    else if (exti_get_flag_status(EXTI7)) {
-        exti_reset_request(EXTI7);
-
-        if (gpio_get(GPIOC, GPIO7)) {
-            latch_high_7 = true;
-
-            modbus.discrete_it_latch_high[7] = 0;
-            modbus.discrete_it_latch_low[7] = 0;
-        }
-        else {
-            latch_low_7 = true;
-
-            modbus.discrete_it_latch_high[7] = 1;
-            modbus.discrete_it_latch_low[7] = 1;
-        }
-
-        if (latch_high_7 && latch_low_7) {
-
-            modbus.input_it_counter[7]++;
-            if (modbus.input_it_counter[7] > 65534) modbus.input_it_counter[7] = 0;
-
-            latch_low_7 = false;
-            latch_high_7 = false;
-        }
-        modbus.discrete_it_read[7] = (uint8_t) (gpio_get(GPIOC, GPIO7) >> 7);
-
-    }
-}
+//void exti0_isr(void)
+//{
+//    exti_reset_request(EXTI0); // —бросили флаг
+//
+//    Modbus& modbus = Modbus::instance();
+//
+//    static bool latch_low_0 = false;
+//    static bool latch_high_0 = false;
+//
+//    if (GPIOC_IDR & (GPIO0)) { // LATCH_LOW
+//        latch_high_0 = true;
+//        modbus.discrete_it_latch_low[0] = 0;
+//        modbus.discrete_it_latch_high[0] = 0;
+//    }
+//    else { // LATCH_HIGH
+//        latch_low_0 = true;
+//        modbus.discrete_it_latch_high[0] = 1;
+//        modbus.discrete_it_latch_low[0] = 1;
+//    }
+//
+//    if (latch_high_0 && latch_low_0) {
+//
+//        modbus.input_it_counter[0]++;
+//        if (modbus.input_it_counter[0] > 65534) modbus.input_it_counter[0] = 0;
+//
+//        latch_low_0 = false;
+//        latch_high_0 = false;
+//    }
+//
+//    modbus.discrete_it_read[0] = (uint8_t) (gpio_get(GPIOC, GPIO0)); // READ_GPIO
+//}
+
+//void exti1_isr(void)
+//{
+//    exti_reset_request(EXTI1); // —бросили флаг
+//
+//    Modbus& modbus = Modbus::instance();
+//
+//    static bool latch_low_1 = false;
+//    static bool latch_high_1 = false;
+//
+//    if (GPIOC_IDR & (GPIO1)) { // LATCH_HIGH
+//        //latch_high_1 = true;
+//
+//        modbus.discrete_it_latch_low[1] = 0;
+//        modbus.discrete_it_latch_high[1] = 0;
+//    }
+//    else { // LATCH_LOW
+//           //latch_low_1 = true;
+//        modbus.discrete_it_latch_high[1] = 1;
+//        modbus.discrete_it_latch_low[1] = 1;
+//    }
+//
+//    if (latch_high_1 && latch_low_1) {
+//
+//        modbus.input_it_counter[1]++;
+//        if (modbus.input_it_counter[1] > 65534) modbus.input_it_counter[1] = 0;
+//
+//        latch_low_1 = false;
+//        latch_high_1 = false;
+//    }
+//
+//    modbus.discrete_it_read[1] = (uint8_t) (gpio_get(GPIOC, GPIO1) >> 1);
+//}
+//
+//void exti2_isr(void)
+//{
+//    exti_reset_request(EXTI2); // —бросили флаг
+//
+//    Modbus& modbus = Modbus::instance();
+//
+//    static bool latch_low_2 = false;
+//    static bool latch_high_2 = false;
+//
+//    if (GPIOC_IDR & (GPIO2)) { // LATCH_HIGH
+//        latch_high_2 = true;
+//
+//        modbus.discrete_it_latch_high[2] = 0;
+//        modbus.discrete_it_latch_low[2] = 0;
+//    }
+//    else { // LATCH_LOW
+//        latch_low_2 = true;
+//
+//        modbus.discrete_it_latch_high[2] = 1;
+//        modbus.discrete_it_latch_low[2] = 1;
+//    }
+//
+//    if (latch_high_2 && latch_low_2) {
+//
+//        modbus.input_it_counter[2]++;
+//        if (modbus.input_it_counter[2] > 65534) modbus.input_it_counter[2] = 0;
+//
+//        latch_low_2 = false;
+//        latch_high_2 = false;
+//    }
+//
+//    modbus.discrete_it_read[2] = (uint8_t) (gpio_get(GPIOC, GPIO2) >> 2);
+//}
+//
+//void exti3_isr(void)
+//{
+//    exti_reset_request(EXTI3); // —бросили флаг
+//
+//    Modbus& modbus = Modbus::instance();
+//
+//    static bool latch_low_3 = false;
+//    static bool latch_high_3 = false;
+//
+//    if (GPIOC_IDR & (GPIO3)) { // LATCH_HIGH
+//        latch_high_3 = true;
+//
+//        modbus.discrete_it_latch_high[3] = 0;
+//        modbus.discrete_it_latch_low[3] = 0;
+//    }
+//    else { // LATCH_LOW
+//        latch_low_3 = true;
+//
+//        modbus.discrete_it_latch_high[3] = 1;
+//        modbus.discrete_it_latch_low[3] = 1;
+//    }
+//
+//    if (latch_high_3 && latch_low_3) {
+//
+//        modbus.input_it_counter[3]++;
+//        if (modbus.input_it_counter[3] > 65534) modbus.input_it_counter[3] = 0;
+//
+//        latch_low_3 = false;
+//        latch_high_3 = false;
+//    }
+//    modbus.discrete_it_read[3] = (uint8_t) (gpio_get(GPIOC, GPIO3) >> 3);
+//}
+//
+//void exti4_isr(void)
+//{
+//    exti_reset_request(EXTI4); // —бросили флаг
+//
+//    Modbus& modbus = Modbus::instance();
+//
+//    static bool latch_low_4 = false;
+//    static bool latch_high_4 = false;
+//
+//    if (GPIOC_IDR & (GPIO4)) { // LATCH_HIGH
+//        //latch_high_4 = true;
+//
+//        modbus.discrete_it_latch_high[4] = 0;
+//        modbus.discrete_it_latch_low[4] = 0;
+//    }
+//    else { // LATCH_LOW
+//           //latch_low_4 = true;
+//
+//        modbus.discrete_it_latch_high[4] = 1;
+//        modbus.discrete_it_latch_low[4] = 1;
+//    }
+//
+//    if (latch_high_4 && latch_low_4) {
+//
+//        modbus.input_it_counter[4]++;
+//        if (modbus.input_it_counter[4] > 65534) modbus.input_it_counter[4] = 0;
+//
+//        latch_low_4 = false;
+//        latch_high_4 = false;
+//    }
+//    modbus.discrete_it_read[4] = (uint8_t) (gpio_get(GPIOC, GPIO4) >> 4);
+//}
+//
+//void exti9_5_isr(void)
+//{
+//
+//    static bool latch_low_5 = false;
+//    static bool latch_high_5 = false;
+//
+//    static bool latch_low_6 = false;
+//    static bool latch_high_6 = false;
+//
+//    static bool latch_low_7 = false;
+//    static bool latch_high_7 = false;
+//
+//    Modbus& modbus = Modbus::instance();
+//
+//    if (exti_get_flag_status(EXTI5)) {
+//        exti_reset_request(EXTI5); // —бросили флаг
+//
+//        if (gpio_get(GPIOC, GPIO5)) {
+//            latch_high_5 = true;
+//
+//            modbus.discrete_it_latch_high[5] = 0;
+//            modbus.discrete_it_latch_low[5] = 0;
+//        }
+//        else {
+//            latch_low_5 = true;
+//
+//            modbus.discrete_it_latch_high[5] = 1;
+//            modbus.discrete_it_latch_low[5] = 1;
+//        }
+//
+//        if (latch_high_5 && latch_low_5) {
+//
+//            modbus.input_it_counter[5]++;
+//            if (modbus.input_it_counter[5] > 65534) modbus.input_it_counter[5] = 0;
+//
+//            latch_low_5 = false;
+//            latch_high_5 = false;
+//        }
+//        modbus.discrete_it_read[5] = (uint8_t) (gpio_get(GPIOC, GPIO5) >> 5);
+//        //*_modbus_ptr->discrete_it_read = gpio_get(GPIOC, GPIO5); OTHER VARIANT
+//    }
+//    else if (exti_get_flag_status(EXTI6)) {
+//        exti_reset_request(EXTI6);
+//
+//        if (gpio_get(GPIOC, GPIO6)) {
+//            latch_high_6 = true;
+//
+//            modbus.discrete_it_latch_high[6] = 0;
+//            modbus.discrete_it_latch_low[6] = 0;
+//        }
+//        else {
+//            latch_low_6 = true;
+//
+//            modbus.discrete_it_latch_high[6] = 1;
+//            modbus.discrete_it_latch_low[6] = 1;
+//        }
+//
+//        if (latch_high_6 && latch_low_6) {
+//
+//            modbus.input_it_counter[6]++;
+//            if (modbus.input_it_counter[6] > 65534) modbus.input_it_counter[6] = 0;
+//
+//            latch_low_6 = false;
+//            latch_high_6 = false;
+//        }
+//        modbus.discrete_it_read[6] = (uint8_t) (gpio_get(GPIOC, GPIO6) >> 6);
+//    }
+//    else if (exti_get_flag_status(EXTI7)) {
+//        exti_reset_request(EXTI7);
+//
+//        if (gpio_get(GPIOC, GPIO7)) {
+//            latch_high_7 = true;
+//
+//            modbus.discrete_it_latch_high[7] = 0;
+//            modbus.discrete_it_latch_low[7] = 0;
+//        }
+//        else {
+//            latch_low_7 = true;
+//
+//            modbus.discrete_it_latch_high[7] = 1;
+//            modbus.discrete_it_latch_low[7] = 1;
+//        }
+//
+//        if (latch_high_7 && latch_low_7) {
+//
+//            modbus.input_it_counter[7]++;
+//            if (modbus.input_it_counter[7] > 65534) modbus.input_it_counter[7] = 0;
+//
+//            latch_low_7 = false;
+//            latch_high_7 = false;
+//        }
+//        modbus.discrete_it_read[7] = (uint8_t) (gpio_get(GPIOC, GPIO7) >> 7);
+//
+//    }
+//}
 
 /**************************************************************/
 /**********************  MODBUS FUNCTION CODE ****************************/
