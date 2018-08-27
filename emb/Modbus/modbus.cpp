@@ -291,10 +291,7 @@ void mb_latch_low(uint8_t* input_latch_low)
     *(input_latch_low + 7) = gpio_get(GPIOC, GPIO7);
 }
 
-void Modbus::mb_latch_high(uint8_t* input_latch_high)
-{
 
-}
 
 void Modbus::mb_latch_clear()
 {
