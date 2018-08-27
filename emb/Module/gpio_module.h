@@ -2,10 +2,8 @@
 #include <Modbus/registers.h>
 #include <cstdint>
 #include <etl/queue.h>
-#include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/exti.h>
-
-
+#include <libopencm3/stm32/gpio.h>
 
 class GpioModule
 {
@@ -64,37 +62,45 @@ class GpioModule
         PortPin port_read;
     };
 
-    using Queue = etl::queue<Message, 7>;
+    // using Queue = etl::queue<Message, 7>;
 
-
-    GpioModule();
-
+    static GpioModule& instance()
+    {
+        static GpioModule instance;
+        return instance;
+    }
 
     void run();
-    Queue* get_queue() { return &_queue; }
-    //auto get_gpio() { return _gpio; } // GpioIO* get_gpio() { return _gpio; } ERROR?
-
-
-    etl::array<GpioIO, 8> _gpio = {{
-      {GpioMode::READ, {GPIOA, GPIO0}, {GPIOC, GPIO0} },
-      {GpioMode::READ, {GPIOA, GPIO1}, {GPIOC, GPIO1} },
-      {GpioMode::READ, {GPIOA, GPIO2}, {GPIOC, GPIO2} },
-      {GpioMode::READ, {GPIOA, GPIO3}, {GPIOC, GPIO3} },
-      {GpioMode::READ, {GPIOB, GPIO6}, {GPIOC, GPIO4} },
-      {GpioMode::READ, {GPIOB, GPIO7}, {GPIOC, GPIO5} },
-      {GpioMode::READ, {GPIOB, GPIO8}, {GPIOC, GPIO6} },
-      {GpioMode::READ, {GPIOB, GPIO9}, {GPIOC, GPIO7} }
-    }};
-
-    etl::array<uint8_t, 8> _exti = { EXTI0, EXTI1, EXTI2, EXTI3, EXTI4, EXTI5, EXTI6, EXTI7 };
 
  private:
-    Queue _queue;
-    etl::array<uint8_t, 8> _cached_gpio_write = { 0 };
+    // Queue _queue;
+    etl::array<GpioIO, 8> _gpio = {
+      {{GpioMode::READ, {GPIOA, GPIO0}, {GPIOC, GPIO0}},
+       {GpioMode::READ, {GPIOA, GPIO1}, {GPIOC, GPIO1}},
+       {GpioMode::READ, {GPIOA, GPIO2}, {GPIOC, GPIO2}},
+       {GpioMode::READ, {GPIOA, GPIO3}, {GPIOC, GPIO3}},
+       {GpioMode::READ, {GPIOB, GPIO6}, {GPIOC, GPIO4}},
+       {GpioMode::READ, {GPIOB, GPIO7}, {GPIOC, GPIO5}},
+       {GpioMode::READ, {GPIOB, GPIO8}, {GPIOC, GPIO6}},
+       {GpioMode::READ, {GPIOB, GPIO9}, {GPIOC, GPIO7}}}};
+    etl::array<uint8_t, 8> _exti = {EXTI0, EXTI1, EXTI2, EXTI3,
+                                    EXTI4, EXTI5, EXTI6, EXTI7};
+    etl::array<uint8_t, 8> _cached_gpio_write = {0};
 
-
+    GpioModule();
+    GpioModule(const GpioModule&) = default;
+    GpioModule& operator=(const GpioModule&);
 
     void _dispatch_queue();
     void _polling_gpio_registers();
 
+    void _latch_clear();
+    void _counter_clear();
+
+    friend void exti0_isr(void);
+    friend void exti1_isr(void);
+    friend void exti2_isr(void);
+    friend void exti3_isr(void);
+    friend void exti4_isr(void);
+    friend void exti9_5_isr(void);
 };
