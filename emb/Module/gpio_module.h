@@ -5,6 +5,7 @@
 #include <libopencm3/stm32/exti.h>
 #include <libopencm3/stm32/gpio.h>
 
+
 class GpioModule
 {
  public:
@@ -71,6 +72,7 @@ class GpioModule
     }
 
     void run();
+    etl::array<GpioIO, 8> get_qpio(){ return _gpio;}
 
  private:
     // Queue _queue;
@@ -96,6 +98,7 @@ class GpioModule
 
     void _latch_clear();
     void _counter_clear();
+
 
     friend void exti0_isr(void);
     friend void exti1_isr(void);

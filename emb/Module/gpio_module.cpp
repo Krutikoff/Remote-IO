@@ -90,6 +90,8 @@ void GpioModule::_polling_gpio_registers()
     }
 }
 
+
+
 void exti0_isr(void)
 {
     auto address = static_cast<uint8_t>(GpioModule::Address::PIN0);
