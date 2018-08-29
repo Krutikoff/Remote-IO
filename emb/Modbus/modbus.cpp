@@ -16,15 +16,15 @@ USHORT Modbus::usRegInputBuf[REG_INPUT_NREGS] = { 0 };
 
 Modbus *_modbus_ptr;
 
-uint8_t* Modbus::coils_it_counter_clear = _modbus_ptr->get_iterator<uint8_t>(0x0012);
-
-uint8_t* Modbus::discrete_it_read = _modbus_ptr->get_iterator<uint8_t>(0x1001);
-uint8_t* Modbus::discrete_it_latch_low = _modbus_ptr->get_iterator<uint8_t>(0x1009);
-uint8_t* Modbus::discrete_it_latch_high = _modbus_ptr->get_iterator<uint8_t>(0x1011);
-
-uint16_t* Modbus::input_it_counter = _modbus_ptr->get_iterator<uint16_t>(0x3001);
-
-uint32_t* Modbus::holding_it_baudrate = _modbus_ptr->get_iterator<uint32_t>(0x4001);
+//uint8_t* Modbus::coils_it_counter_clear = _modbus_ptr->get_iterator<uint8_t>(0x0012);
+//
+//uint8_t* Modbus::discrete_it_read = _modbus_ptr->get_iterator<uint8_t>(0x1001);
+//uint8_t* Modbus::discrete_it_latch_low = _modbus_ptr->get_iterator<uint8_t>(0x1009);
+//uint8_t* Modbus::discrete_it_latch_high = _modbus_ptr->get_iterator<uint8_t>(0x1011);
+//
+//uint16_t* Modbus::input_it_counter = _modbus_ptr->get_iterator<uint16_t>(0x3001);
+//
+//uint32_t* Modbus::holding_it_baudrate = _modbus_ptr->get_iterator<uint32_t>(0x4001);
 
 Modbus::Modbus()
 {
@@ -59,43 +59,43 @@ void Modbus::poll()
 
 }
 
-void Modbus::set_register(RegisterType type, uint32_t address, uint16_t value)
-{
-    if ((type == RegisterType::COIL) && (address < REG_COIL_NREGS)) {
-        usRegCoilBuf[address] = value;
-    }
-    else if ((type == RegisterType::DISCRETE) && (address < REG_DISCRETE_NREGS)) {
-        usRegDiscreteBuf[address] = value;
-    }
-    else if ((type == RegisterType::HOLDING) && (address < REG_HOLDING_NREGS)) {
-        usRegHoldingBuf[address] = value;
-    }
-    else if ((type == RegisterType::INPUT) && (address < REG_INPUT_NREGS)) {
-        usRegInputBuf[address] = value;
-    }
-}
+//void Modbus::set_register(RegisterType type, uint32_t address, uint16_t value)
+//{
+//    if ((type == RegisterType::COIL) && (address < REG_COIL_NREGS)) {
+//        usRegCoilBuf[address] = value;
+//    }
+//    else if ((type == RegisterType::DISCRETE) && (address < REG_DISCRETE_NREGS)) {
+//        usRegDiscreteBuf[address] = value;
+//    }
+//    else if ((type == RegisterType::HOLDING) && (address < REG_HOLDING_NREGS)) {
+//        usRegHoldingBuf[address] = value;
+//    }
+//    else if ((type == RegisterType::INPUT) && (address < REG_INPUT_NREGS)) {
+//        usRegInputBuf[address] = value;
+//    }
+//}
 
-Modbus::Error Modbus::get_register(RegisterType type, uint32_t address, uint16_t &value)
-{
-
-    if ((type == RegisterType::COIL) && (address < REG_COIL_NREGS)) {
-        value = usRegCoilBuf[address];
-        return Error::MB_ENOERR;
-    }
-    else if ((type == RegisterType::DISCRETE) && (address < REG_DISCRETE_NREGS)) {
-        value = usRegDiscreteBuf[address];
-        return Error::MB_ENOERR;
-    }
-    else if ((type == RegisterType::HOLDING) && (address < REG_HOLDING_NREGS)) {
-        value = usRegHoldingBuf[address];
-        return Error::MB_ENOERR;
-    }
-    else if ((type == RegisterType::INPUT) && (address < REG_INPUT_NREGS)) {
-        value = usRegInputBuf[address];
-        return Error::MB_ENOERR;
-    }
-    return Error::MB_ENOERR;
-}
+//Modbus::Error Modbus::get_register(RegisterType type, uint32_t address, uint16_t &value)
+//{
+//
+//    if ((type == RegisterType::COIL) && (address < REG_COIL_NREGS)) {
+//        value = usRegCoilBuf[address];
+//        return Error::MB_ENOERR;
+//    }
+//    else if ((type == RegisterType::DISCRETE) && (address < REG_DISCRETE_NREGS)) {
+//        value = usRegDiscreteBuf[address];
+//        return Error::MB_ENOERR;
+//    }
+//    else if ((type == RegisterType::HOLDING) && (address < REG_HOLDING_NREGS)) {
+//        value = usRegHoldingBuf[address];
+//        return Error::MB_ENOERR;
+//    }
+//    else if ((type == RegisterType::INPUT) && (address < REG_INPUT_NREGS)) {
+//        value = usRegInputBuf[address];
+//        return Error::MB_ENOERR;
+//    }
+//    return Error::MB_ENOERR;
+//}
 
 Modbus::RegisterType Modbus::_get_type(uint32_t address)
 {
@@ -119,255 +119,255 @@ Modbus::RegisterType Modbus::_get_type(uint32_t address)
         return RegisterType::ERROR;
 }
 
-void Modbus::mb_gpio_set(uint8_t* coil_data_set)
-{
+//void Modbus::mb_gpio_set(uint8_t* coil_data_set)
+//{
+//
+//    if (coil_data_set[0]) {
+//
+//        exti_disable_request(EXTI0); // «апрещаем прерывани€ дл€ чтени€ данных
+//        config_write[0] = true;
+//        config_read[0] = false;
+//    }
+//    else {
+//        exti_enable_request(EXTI0); // –азрешаем прерывани€ дл€ чтени€ данных
+//        config_write[0] = false;
+//        config_read[0] = true;
+//    }
+//
+//    if (coil_data_set[1]) {
+//        exti_disable_request(EXTI1);
+//        config_write[1] = true;
+//        config_read[1] = false;
+//    }
+//    else {
+//        exti_enable_request(EXTI1); // –азрешаем прерывани€ дл€ чтени€ данных
+//        config_write[1] = false;
+//        config_read[1] = true;
+//    }
+//
+//    if (coil_data_set[2]) {
+//        exti_disable_request(EXTI2);
+//        config_write[2] = true;
+//        config_read[2] = false;
+//    }
+//    else {
+//        exti_enable_request(EXTI2); // –азрешаем прерывани€ дл€ чтени€ данных
+//        config_write[2] = false;
+//        config_read[2] = true;
+//    }
+//    if (coil_data_set[3]) {
+//        exti_disable_request(EXTI3);
+//        config_write[3] = true;
+//        config_read[3] = false;
+//    }
+//    else {
+//        exti_enable_request(EXTI3); // –азрешаем прерывани€ дл€ чтени€ данных
+//        config_write[3] = false;
+//        config_read[3] = true;
+//    }
+//    if (coil_data_set[4]) {
+//        exti_disable_request(EXTI4);
+//        config_write[4] = true;
+//        config_read[4] = false;
+//    }
+//    else {
+//        exti_enable_request(EXTI4); // –азрешаем прерывани€ дл€ чтени€ данных
+//        config_write[4] = false;
+//        config_read[4] = true;
+//    }
+//    if (coil_data_set[5]) {
+//        exti_disable_request(EXTI5);
+//        config_write[5] = true;
+//        config_read[5] = false;
+//    }
+//    else {
+//        exti_enable_request(EXTI5); // –азрешаем прерывани€ дл€ чтени€ данных
+//        config_write[5] = false;
+//        config_read[5] = true;
+//    }
+//    if (coil_data_set[6]) {
+//        exti_disable_request(EXTI6);
+//        config_write[6] = true;
+//        config_read[6] = false;
+//    }
+//    else {
+//        exti_enable_request(EXTI6); // –азрешаем прерывани€ дл€ чтени€ данных
+//        config_write[6] = false;
+//        config_read[6] = true;
+//    }
+//    if (coil_data_set[7]) {
+//        exti_disable_request(EXTI7);
+//        config_write[7] = true;
+//        config_read[7] = false;
+//    }
+//    else {
+//        exti_enable_request(EXTI7); // –азрешаем прерывани€ дл€ чтени€ данных
+//        config_write[7] = false;
+//        config_read[7] = true;
+//    }
+//}
 
-    if (coil_data_set[0]) {
+//void Modbus::mb_gpio_write(uint8_t* coil_data_write)
+//{
+//
+//    if (config_write[0]) {
+//
+//        if (*coil_data_write) {
+//            gpio_set(GPIOA, GPIO0);
+//        }
+//        else
+//            gpio_clear(GPIOA, GPIO0);
+//
+//    }
+//
+//    if (config_write[1]) {
+//        if (*(coil_data_write + 1)) {
+//            gpio_set(GPIOA, GPIO1);
+//        }
+//        else
+//            gpio_clear(GPIOA, GPIO1);
+//    }
+//
+//    if (config_write[2]) {
+//
+//        if (*(coil_data_write + 2)) {
+//            gpio_set(GPIOA, GPIO2);
+//        }
+//        else
+//            gpio_clear(GPIOA, GPIO2);
+//    }
+//
+//    if (config_write[3]) {
+//        if (*(coil_data_write + 3)) {
+//            gpio_set(GPIOA, GPIO3);
+//        }
+//        else
+//            gpio_clear(GPIOA, GPIO3);
+//    }
+//
+//    if (config_write[4]) {
+//        if (*(coil_data_write + 4)) {
+//            gpio_set(GPIOB, GPIO6);
+//        }
+//        else
+//            gpio_clear(GPIOB, GPIO6);
+//    }
+//
+//    if (config_write[5]) {
+//        if (*(coil_data_write + 5)) {
+//            gpio_set(GPIOB, GPIO7);
+//        }
+//        else
+//            gpio_clear(GPIOB, GPIO7);
+//    }
+//
+//    if (config_write[6]) {
+//        if (*(coil_data_write + 6)) {
+//            gpio_set(GPIOB, GPIO8);
+//        }
+//        else
+//            gpio_clear(GPIOB, GPIO8);
+//    }
+//
+//    if (config_write[7]) {
+//        if (*(coil_data_write + 7)) {
+//            gpio_set(GPIOB, GPIO9);
+//        }
+//        else
+//            gpio_clear(GPIOB, GPIO9);
+//    }
+//}
 
-        exti_disable_request(EXTI0); // «апрещаем прерывани€ дл€ чтени€ данных
-        config_write[0] = true;
-        config_read[0] = false;
-    }
-    else {
-        exti_enable_request(EXTI0); // –азрешаем прерывани€ дл€ чтени€ данных
-        config_write[0] = false;
-        config_read[0] = true;
-    }
-
-    if (coil_data_set[1]) {
-        exti_disable_request(EXTI1);
-        config_write[1] = true;
-        config_read[1] = false;
-    }
-    else {
-        exti_enable_request(EXTI1); // –азрешаем прерывани€ дл€ чтени€ данных
-        config_write[1] = false;
-        config_read[1] = true;
-    }
-
-    if (coil_data_set[2]) {
-        exti_disable_request(EXTI2);
-        config_write[2] = true;
-        config_read[2] = false;
-    }
-    else {
-        exti_enable_request(EXTI2); // –азрешаем прерывани€ дл€ чтени€ данных
-        config_write[2] = false;
-        config_read[2] = true;
-    }
-    if (coil_data_set[3]) {
-        exti_disable_request(EXTI3);
-        config_write[3] = true;
-        config_read[3] = false;
-    }
-    else {
-        exti_enable_request(EXTI3); // –азрешаем прерывани€ дл€ чтени€ данных
-        config_write[3] = false;
-        config_read[3] = true;
-    }
-    if (coil_data_set[4]) {
-        exti_disable_request(EXTI4);
-        config_write[4] = true;
-        config_read[4] = false;
-    }
-    else {
-        exti_enable_request(EXTI4); // –азрешаем прерывани€ дл€ чтени€ данных
-        config_write[4] = false;
-        config_read[4] = true;
-    }
-    if (coil_data_set[5]) {
-        exti_disable_request(EXTI5);
-        config_write[5] = true;
-        config_read[5] = false;
-    }
-    else {
-        exti_enable_request(EXTI5); // –азрешаем прерывани€ дл€ чтени€ данных
-        config_write[5] = false;
-        config_read[5] = true;
-    }
-    if (coil_data_set[6]) {
-        exti_disable_request(EXTI6);
-        config_write[6] = true;
-        config_read[6] = false;
-    }
-    else {
-        exti_enable_request(EXTI6); // –азрешаем прерывани€ дл€ чтени€ данных
-        config_write[6] = false;
-        config_read[6] = true;
-    }
-    if (coil_data_set[7]) {
-        exti_disable_request(EXTI7);
-        config_write[7] = true;
-        config_read[7] = false;
-    }
-    else {
-        exti_enable_request(EXTI7); // –азрешаем прерывани€ дл€ чтени€ данных
-        config_write[7] = false;
-        config_read[7] = true;
-    }
-}
-
-void Modbus::mb_gpio_write(uint8_t* coil_data_write)
-{
-
-    if (config_write[0]) {
-
-        if (*coil_data_write) {
-            gpio_set(GPIOA, GPIO0);
-        }
-        else
-            gpio_clear(GPIOA, GPIO0);
-
-    }
-
-    if (config_write[1]) {
-        if (*(coil_data_write + 1)) {
-            gpio_set(GPIOA, GPIO1);
-        }
-        else
-            gpio_clear(GPIOA, GPIO1);
-    }
-
-    if (config_write[2]) {
-
-        if (*(coil_data_write + 2)) {
-            gpio_set(GPIOA, GPIO2);
-        }
-        else
-            gpio_clear(GPIOA, GPIO2);
-    }
-
-    if (config_write[3]) {
-        if (*(coil_data_write + 3)) {
-            gpio_set(GPIOA, GPIO3);
-        }
-        else
-            gpio_clear(GPIOA, GPIO3);
-    }
-
-    if (config_write[4]) {
-        if (*(coil_data_write + 4)) {
-            gpio_set(GPIOB, GPIO6);
-        }
-        else
-            gpio_clear(GPIOB, GPIO6);
-    }
-
-    if (config_write[5]) {
-        if (*(coil_data_write + 5)) {
-            gpio_set(GPIOB, GPIO7);
-        }
-        else
-            gpio_clear(GPIOB, GPIO7);
-    }
-
-    if (config_write[6]) {
-        if (*(coil_data_write + 6)) {
-            gpio_set(GPIOB, GPIO8);
-        }
-        else
-            gpio_clear(GPIOB, GPIO8);
-    }
-
-    if (config_write[7]) {
-        if (*(coil_data_write + 7)) {
-            gpio_set(GPIOB, GPIO9);
-        }
-        else
-            gpio_clear(GPIOB, GPIO9);
-    }
-}
-
-void mb_latch_low(uint8_t* input_latch_low)
-{
-
-    *input_latch_low = gpio_get(GPIOC, GPIO0);
-    *(input_latch_low + 1) = gpio_get(GPIOC, GPIO1);
-    *(input_latch_low + 2) = gpio_get(GPIOC, GPIO2);
-    *(input_latch_low + 3) = gpio_get(GPIOC, GPIO3);
-    *(input_latch_low + 4) = gpio_get(GPIOC, GPIO4);
-    *(input_latch_low + 5) = gpio_get(GPIOC, GPIO5);
-    *(input_latch_low + 6) = gpio_get(GPIOC, GPIO6);
-    *(input_latch_low + 7) = gpio_get(GPIOC, GPIO7);
-}
+//void mb_latch_low(uint8_t* input_latch_low)
+//{
+//
+//    *input_latch_low = gpio_get(GPIOC, GPIO0);
+//    *(input_latch_low + 1) = gpio_get(GPIOC, GPIO1);
+//    *(input_latch_low + 2) = gpio_get(GPIOC, GPIO2);
+//    *(input_latch_low + 3) = gpio_get(GPIOC, GPIO3);
+//    *(input_latch_low + 4) = gpio_get(GPIOC, GPIO4);
+//    *(input_latch_low + 5) = gpio_get(GPIOC, GPIO5);
+//    *(input_latch_low + 6) = gpio_get(GPIOC, GPIO6);
+//    *(input_latch_low + 7) = gpio_get(GPIOC, GPIO7);
+//}
 
 
 
-void Modbus::mb_latch_clear()
-{
+//void Modbus::mb_latch_clear()
+//{
+//
+//    uint8_t clear_low[8] = { 1, 1, 1, 1, 1, 1, 1, 1 };
+//    uint8_t clear_high[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+//
+//    std::copy_n(clear_low, 8, discrete_it_latch_low);
+//    std::copy_n(clear_high, 8, discrete_it_latch_high);
+//
+//}
 
-    uint8_t clear_low[8] = { 1, 1, 1, 1, 1, 1, 1, 1 };
-    uint8_t clear_high[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+//void Modbus::mb_counter_clear()
+//{
+//
+//    Modbus& modbus = Modbus::instance();
+//
+//    //uint8_t clear_counter[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+//
+//    //std::copy_n(clear_counter, 8, input_it_counter);
+//
+//    if (coils_it_counter_clear[0]) {
+//        modbus.input_it_counter[0] = 0;
+//        coils_it_counter_clear[0] = 0;
+//    }
+//
+//    if (coils_it_counter_clear[1]) {
+//        modbus.input_it_counter[1] = 0;
+//        coils_it_counter_clear[1] = 0;
+//    }
+//    if (coils_it_counter_clear[2]) {
+//        modbus.input_it_counter[2] = 0;
+//        coils_it_counter_clear[2] = 0;
+//    }
+//
+//    if (coils_it_counter_clear[3]) {
+//        modbus.input_it_counter[3] = 0;
+//        coils_it_counter_clear[3] = 0;
+//    }
+//
+//    if (coils_it_counter_clear[4]) {
+//        modbus.input_it_counter[4] = 0;
+//        coils_it_counter_clear[4] = 0;
+//    }
+//
+//    if (coils_it_counter_clear[5]) {
+//        modbus.input_it_counter[5] = 0;
+//        coils_it_counter_clear[5] = 0;
+//    }
+//
+//    if (coils_it_counter_clear[6]) {
+//        modbus.input_it_counter[6] = 0;
+//        coils_it_counter_clear[6] = 0;
+//    }
+//
+//    if (coils_it_counter_clear[7]) {
+//        modbus.input_it_counter[7] = 0;
+//        coils_it_counter_clear[7] = 0;
+//    }
+//}
 
-    std::copy_n(clear_low, 8, discrete_it_latch_low);
-    std::copy_n(clear_high, 8, discrete_it_latch_high);
-
-}
-
-void Modbus::mb_counter_clear()
-{
-
-    Modbus& modbus = Modbus::instance();
-
-    //uint8_t clear_counter[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-
-    //std::copy_n(clear_counter, 8, input_it_counter);
-
-    if (coils_it_counter_clear[0]) {
-        modbus.input_it_counter[0] = 0;
-        coils_it_counter_clear[0] = 0;
-    }
-
-    if (coils_it_counter_clear[1]) {
-        modbus.input_it_counter[1] = 0;
-        coils_it_counter_clear[1] = 0;
-    }
-    if (coils_it_counter_clear[2]) {
-        modbus.input_it_counter[2] = 0;
-        coils_it_counter_clear[2] = 0;
-    }
-
-    if (coils_it_counter_clear[3]) {
-        modbus.input_it_counter[3] = 0;
-        coils_it_counter_clear[3] = 0;
-    }
-
-    if (coils_it_counter_clear[4]) {
-        modbus.input_it_counter[4] = 0;
-        coils_it_counter_clear[4] = 0;
-    }
-
-    if (coils_it_counter_clear[5]) {
-        modbus.input_it_counter[5] = 0;
-        coils_it_counter_clear[5] = 0;
-    }
-
-    if (coils_it_counter_clear[6]) {
-        modbus.input_it_counter[6] = 0;
-        coils_it_counter_clear[6] = 0;
-    }
-
-    if (coils_it_counter_clear[7]) {
-        modbus.input_it_counter[7] = 0;
-        coils_it_counter_clear[7] = 0;
-    }
-}
-
-void Modbus::mb_baudrate_set()
-{
-
-    Modbus& modbus = Modbus::instance();
-
-    if (modbus.baudrate != *modbus.holding_it_baudrate) {
-
-        nvic_disable_irq(MODBUS_IRQ);
-        usart_disable(MODBUS_UART);
-        modbus.baudrate = *modbus.holding_it_baudrate;
-        usart_set_baudrate(MODBUS_UART, modbus.baudrate);
-        nvic_enable_irq(MODBUS_IRQ);
-        usart_enable(MODBUS_UART);
-    }
-}
+//void Modbus::mb_baudrate_set()
+//{
+//
+//    Modbus& modbus = Modbus::instance();
+//
+//    if (modbus.baudrate != *modbus.holding_it_baudrate) {
+//
+//        nvic_disable_irq(MODBUS_IRQ);
+//        usart_disable(MODBUS_UART);
+//        modbus.baudrate = *modbus.holding_it_baudrate;
+//        usart_set_baudrate(MODBUS_UART, modbus.baudrate);
+//        nvic_enable_irq(MODBUS_IRQ);
+//        usart_enable(MODBUS_UART);
+//    }
+//}
 
 //void exti0_isr(void)
 //{
