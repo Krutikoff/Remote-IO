@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include <etl/queue.h>
+
 
 class I2cModule
 {
@@ -17,10 +17,10 @@ public:
         uint32_t value;
     };
 
-    using Queue = etl::queue<Message, 7>;
+
 
     void run();
-    Queue* get_queue() { return &_queue;}
+
 private:
-    Queue _queue;
+
 };
