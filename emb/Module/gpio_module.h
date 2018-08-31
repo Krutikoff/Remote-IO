@@ -5,7 +5,6 @@
 #include <libopencm3/stm32/exti.h>
 #include <libopencm3/stm32/gpio.h>
 
-
 class GpioModule
 {
  public:
@@ -72,10 +71,13 @@ class GpioModule
     }
 
     void run();
-    etl::array<GpioIO, 8> get_qpio(){ return _gpio;}
+    etl::array<GpioIO, 8> get_qpio() { return _gpio; }
 
  private:
-    // Queue _queue;
+
+    static constexpr uint16_t MAX_VALUE_COUNTER = 65534;
+    etl::array<uint8_t, 8> _cache_gpio_read = {0};
+
     etl::array<GpioIO, 8> _gpio = {
       {{GpioMode::READ, {GPIOA, GPIO0}, {GPIOC, GPIO0}},
        {GpioMode::READ, {GPIOA, GPIO1}, {GPIOC, GPIO1}},
@@ -93,12 +95,10 @@ class GpioModule
     GpioModule(const GpioModule&) = default;
     GpioModule& operator=(const GpioModule&);
 
-    void _dispatch_queue();
     void _polling_gpio_registers();
 
     void _latch_clear();
     void _counter_clear();
-
 
     friend void exti0_isr(void);
     friend void exti1_isr(void);
