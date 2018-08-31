@@ -2,6 +2,7 @@
 #include <Modbus/registers.h>
 #include <cstdint>
 #include <etl/queue.h>
+#include <libopencm3/stm32/exti.h>
 #include <libopencm3/stm32/gpio.h>
 
 class GpioModule
@@ -48,14 +49,61 @@ class GpioModule
         uint32_t value;
     };
 
-    using Queue = etl::queue<Message, 7>;
+    struct PortPin
+    {
+        uint32_t gpio_port;
+        uint16_t gpio_pin;
+    };
+
+    struct GpioIO
+    {
+        GpioMode mode;
+        PortPin port_write;
+        PortPin port_read;
+    };
+
+    // using Queue = etl::queue<Message, 7>;
+
+    static GpioModule& instance()
+    {
+        static GpioModule instance;
+        return instance;
+    }
 
     void run();
-    Queue* get_queue() { return &_queue; }
+    etl::array<GpioIO, 8> get_qpio() { return _gpio; }
 
  private:
-    Queue _queue;
-    Message _cache_gpio_module_msg;
 
-    void _dispatch_queue();
+    static constexpr uint16_t MAX_VALUE_COUNTER = 65534;
+    etl::array<uint8_t, 8> _cache_gpio_read = {0};
+
+    etl::array<GpioIO, 8> _gpio = {
+      {{GpioMode::READ, {GPIOA, GPIO0}, {GPIOC, GPIO0}},
+       {GpioMode::READ, {GPIOA, GPIO1}, {GPIOC, GPIO1}},
+       {GpioMode::READ, {GPIOA, GPIO2}, {GPIOC, GPIO2}},
+       {GpioMode::READ, {GPIOA, GPIO3}, {GPIOC, GPIO3}},
+       {GpioMode::READ, {GPIOB, GPIO6}, {GPIOC, GPIO4}},
+       {GpioMode::READ, {GPIOB, GPIO7}, {GPIOC, GPIO5}},
+       {GpioMode::READ, {GPIOB, GPIO8}, {GPIOC, GPIO6}},
+       {GpioMode::READ, {GPIOB, GPIO9}, {GPIOC, GPIO7}}}};
+    etl::array<uint8_t, 8> _exti = {EXTI0, EXTI1, EXTI2, EXTI3,
+                                    EXTI4, EXTI5, EXTI6, EXTI7};
+    etl::array<uint8_t, 8> _cached_gpio_write = {0};
+
+    GpioModule();
+    GpioModule(const GpioModule&) = default;
+    GpioModule& operator=(const GpioModule&);
+
+    void _polling_gpio_registers();
+
+    void _latch_clear();
+    void _counter_clear();
+
+    friend void exti0_isr(void);
+    friend void exti1_isr(void);
+    friend void exti2_isr(void);
+    friend void exti3_isr(void);
+    friend void exti4_isr(void);
+    friend void exti9_5_isr(void);
 };

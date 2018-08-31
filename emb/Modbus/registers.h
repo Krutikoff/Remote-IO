@@ -51,7 +51,7 @@ typedef enum : uint32_t {
 }Coil;
 
 typedef enum : uint32_t {
-	GPIO_READ_BIT0 /*= Modbus::REG_DISCRETE_START*/,
+	GPIO_READ_BIT0 = Modbus::REG_DISCRETE_START,
 	GPIO_READ_BIT1,
 	GPIO_READ_BIT2,
 	GPIO_READ_BIT3,
@@ -79,7 +79,7 @@ typedef enum : uint32_t {
 
 
 typedef enum : uint32_t {
-	COUNTER0_VALUE/* = Modbus::REG_INPUT_START*/,
+	COUNTER0_VALUE = Modbus::REG_INPUT_START,
 	COUNTER1_VALUE,
 	COUNTER2_VALUE,
 	COUNTER3_VALUE,
@@ -91,7 +91,7 @@ typedef enum : uint32_t {
 }Input;
 
 typedef enum : uint32_t {
-	UART_BAUDRATE_0/* = Modbus::REG_HOLDING_START*/,
+	UART_BAUDRATE_0 = Modbus::REG_HOLDING_START,
 	UART_BAUDRATE_1,
 	I2C_TX_DATA
 }Holding;
