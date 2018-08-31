@@ -1,4 +1,5 @@
 #include "usart_module.h"
+#include <Modbus/modbus.h>
 
 void UsartModule::run()
 {

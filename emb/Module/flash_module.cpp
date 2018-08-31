@@ -1,4 +1,5 @@
 #include "flash_module.h"
+#include <Modbus/modbus.h>
 
 uint32_t FlashModule::run()
 {
