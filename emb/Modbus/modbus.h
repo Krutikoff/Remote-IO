@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <Modbus/config_modbus.h>
 #include <mb.h>
 
@@ -43,27 +42,20 @@ public:
     bool config_read[8] = { true }; // Set read mode default
     uint32_t baudrate = 0;
 
-//    static uint8_t* coils_it_gpio_set;
-//    static uint8_t* coils_it_gpio_write;
     static uint8_t* coils_it_latch_clear;
     static uint8_t* coils_it_counter_clear;
-
     static uint8_t* discrete_it_read;
     static uint8_t* discrete_it_latch_low;
     static uint8_t* discrete_it_latch_high;
-
     static uint16_t* input_it_counter;
-
     static uint32_t* holding_it_baudrate; // 16 * 2 = 32
-
-    //uint8_t* discrete_it_read = get_iterator <uint8_t>(0x1001);
 
     static Modbus& instance()
     {
         static Modbus instance;
         return instance;
     }
-    //bool init();
+
     void poll();
     void set_flag(RegisterType type, uint8_t address, bool value);
     bool get_flag(RegisterType type, uint8_t address);
@@ -110,26 +102,6 @@ private:
     friend eMBErrorCode eMBRegDiscreteCB(UCHAR * pucRegBuffer, USHORT usAddress,
                                          USHORT usNDiscrete);
 };
-
-//auto Modbus::get_iterator(RegisterType type, uint32_t address) {
-//
-//
-//	if(type == RegisterType::COIL && (address < REG_HOLDING_NREGS)) {
-//		return  usRegCoilBuf + address;
-//
-//	}
-//	else if(type == RegisterType::DISCRETE && (address < REG_HOLDING_NREGS)) {
-//		return  usRegDiscreteBuf + address;
-//	}
-//	else if(type == RegisterType::HOLDING && (address < REG_HOLDING_NREGS)) {
-//		return  usRegHoldingBuf + address;
-//	}
-//	else if(type == RegisterType::INPUT && (address < REG_HOLDING_NREGS)) {
-//		return  usRegInputBuf + address;
-//	}
-//	else
-//		return nullptr;
-//}
 
 template<typename T>
 T* Modbus::get_iterator(uint32_t address)
