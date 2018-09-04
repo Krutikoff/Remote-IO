@@ -22,11 +22,17 @@ class RemoteModule
     void config();
     void run();
 
+    RemoteModule();
+
  private:
-    GpioModule& _gpio_module = GpioModule::instance();
-    UsartModule& _usart_module = UsartModule::instance();
+
+
+
+
+    GpioModule& _gpio_module/* = GpioModule::instance()*/;
+    UsartModule& _usart_module/* = UsartModule::instance()*/;
     I2cModule _i2c_module;
-    FlashModule& _flash_module = FlashModule::instance();
+    FlashModule& _flash_module/* = FlashModule::instance()*/;
 
     void _rcc_clock_config();
     void _gpio_config();

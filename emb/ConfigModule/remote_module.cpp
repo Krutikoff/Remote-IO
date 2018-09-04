@@ -1,13 +1,32 @@
 #include <ConfigModule/remote_module.h>
 
-// RemoteModule::RemoteModule()
-//{
-////        _modbus = Modbus::instance();
-////        _gpio_module = GpioModule::instance();
-////        _usart_module = UsartModule::instance();
-////        //I2cModule i2c_module;
-////        _flash_module = FlashModule::instance();
-//}
+ RemoteModule::RemoteModule():_gpio_module(GpioModule::instance()), _usart_module(UsartModule::instance()), _flash_module(FlashModule::instance())
+{
+
+     config();
+
+     etl::array<GpioModule::GpioIO, 8> gpio_data = _gpio_module.get_qpio();
+     FlashModule::FlashData* flash_data = _flash_module.get_save_data();
+     uint32_t* usart_baudrate = _usart_module.get_baudrate();
+
+
+     for (uint32_t i = 0U; i < gpio_data.size(); ++i) {
+         if (flash_data->gpio_mode[i] != GpioModule::GpioMode::READ) {
+             _flash_module.read_data_from_flash();
+//             gpio_data[i].mode =
+//               (flash_data->gpio_mode[i] != GpioModule::GpioMode::READ)
+//                 ? GpioModule::GpioMode::WRITE
+//                 : GpioModule::GpioMode::READ;
+         }
+     }
+
+     if (flash_data->baudrate != 0xFFFFFFFF) {
+//         *usart_baudrate = flash_data->baudrate;
+//         _flash_module.flash_flag_set = true;
+         _flash_module.read_data_from_flash();
+     }
+
+}
 
 void RemoteModule::config()
 {

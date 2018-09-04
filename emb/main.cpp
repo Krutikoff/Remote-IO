@@ -1,11 +1,11 @@
 #include <ConfigModule/remote_module.h>
-#include <Modbus/modbus.h>
+//#include <Modbus/modbus.h>
 
 int main()
 {
 
     RemoteModule remote_module;
-    remote_module.config();
+    //remote_module.config();
 
 
     Modbus& modbus = Modbus::instance();
