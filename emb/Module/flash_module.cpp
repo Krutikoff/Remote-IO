@@ -3,16 +3,11 @@
 
 uint32_t FlashModule::run()
 {
-
     _polling_flash_data();
 
-//    size_t size_FlashData = sizeof(FlashData);
-
     if(_flag_write){
-        _write_data_to_flash();
-
+        //_write_data_to_flash();
     }
-
     return 0;
 }
 
@@ -50,9 +45,6 @@ void FlashModule::_polling_flash_data()
 
 uint32_t FlashModule::_write_data_to_flash()
 {
-
-    //FlashModule& flash_module = FlashModule::instance();
-
     uint32_t flash_status = 0;
 
     FlashData* _data_ptr = &_flash_data;
@@ -76,7 +68,6 @@ uint32_t FlashModule::_write_data_to_flash()
         if (flash_status != FLASH_SR_EOP) return flash_status;
 
     }
-//    new_flash_data = (FlashData*)_memory_ptr;
 
     _flag_write = false;
     return 0;
@@ -104,7 +95,6 @@ uint32_t FlashModule::read_data_from_flash(){
 
     return 0;
 }
-
 
 
 

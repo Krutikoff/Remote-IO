@@ -4,17 +4,6 @@
 #include "modbus.h"
 #include <cstdint>
 
-
-
-
-
-//#include <stdint.h>
-
-
-
-
-
-
 typedef enum : uint32_t {
 	GPIO_SET_BIT0 = Modbus::REG_COIL_START,
 	GPIO_SET_BIT1,
@@ -76,7 +65,6 @@ typedef enum : uint32_t {
 	LATCH6_HIGH,
 	LATCH7_HIGH
 }Discrete;
-
 
 typedef enum : uint32_t {
 	COUNTER0_VALUE = Modbus::REG_INPUT_START,

@@ -2,35 +2,24 @@
 
  RemoteModule::RemoteModule():_gpio_module(GpioModule::instance()), _usart_module(UsartModule::instance()), _flash_module(FlashModule::instance())
 {
-
      config();
 
      etl::array<GpioModule::GpioIO, 8> gpio_data = _gpio_module.get_qpio();
      FlashModule::FlashData* flash_data = _flash_module.get_save_data();
-     uint32_t* usart_baudrate = _usart_module.get_baudrate();
-
 
      for (uint32_t i = 0U; i < gpio_data.size(); ++i) {
          if (flash_data->gpio_mode[i] != GpioModule::GpioMode::READ) {
              _flash_module.read_data_from_flash();
-//             gpio_data[i].mode =
-//               (flash_data->gpio_mode[i] != GpioModule::GpioMode::READ)
-//                 ? GpioModule::GpioMode::WRITE
-//                 : GpioModule::GpioMode::READ;
          }
      }
 
      if (flash_data->baudrate != 0xFFFFFFFF) {
-//         *usart_baudrate = flash_data->baudrate;
-//         _flash_module.flash_flag_set = true;
          _flash_module.read_data_from_flash();
      }
-
 }
 
 void RemoteModule::config()
 {
-
     _rcc_clock_config();
     _led_setup();
     _gpio_config();
@@ -107,15 +96,13 @@ void RemoteModule::_led_setup()
                   GPIO0 | GPIO1 | GPIO2 | GPIO3);
     gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
                   GPIO6 | GPIO7 | GPIO8 | GPIO9);
-
     gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL,
                   GPIO3 | GPIO4);
     gpio_set(GPIOB, GPIO3 | GPIO4);
 }
 
 void RemoteModule::_tim3_config()
-{  // Õ≈ ¬€«€¬¿≈“—ﬂ
-
+{
     rcc_periph_clock_enable(RCC_TIM3);
     nvic_enable_irq(NVIC_TIM3_IRQ);
     nvic_set_priority(NVIC_TIM3_IRQ, 2);
@@ -126,7 +113,6 @@ void RemoteModule::_tim3_config()
     timer_set_prescaler(TIM3, (rcc_apb1_frequency * 2) /
                                 100000); /* 72MHz to 50 microseconds period */
     timer_set_period(TIM3, 5);
-
     timer_enable_counter(TIM3);
 
 #if 0
@@ -146,13 +132,12 @@ void RemoteModule::_tim3_config()
 }
 
 void tim3_isr(void)
-{                                // Õ≈ ¬€«€¬¿≈“—ﬂ
+{
     TIM_SR(TIM3) &= ~TIM_SR_UIF; /* Clear interrrupt flag. */
 }
 
 void RemoteModule::_Conf_PWM_TIM(uint32_t tim)
 {
-
     // LED PIN: PA1, PA2, PA3, PB6, PB7, PB8, PB9
 
     // gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ,

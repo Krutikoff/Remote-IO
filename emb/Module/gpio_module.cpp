@@ -71,7 +71,7 @@ void exti0_isr(void)
     Modbus& modbus = Modbus::instance();
     GpioModule& gpio_module = GpioModule::instance();
 
-    exti_reset_request(gpio_module._exti[address]);  // —бросили флаг
+    exti_reset_request(gpio_module._exti[address]);  // Reset flag
 
     static bool front_rising = false;
     static bool front_falling = false;
@@ -118,7 +118,7 @@ void exti1_isr(void)
     GpioModule& gpio_module = GpioModule::instance();
     Modbus& modbus = Modbus::instance();
 
-    exti_reset_request(gpio_module._exti[address]);  // —бросили флаг
+    exti_reset_request(gpio_module._exti[address]);  // Reset flag
 
     static bool front_rising = false;
     static bool front_falling = false;
@@ -165,7 +165,7 @@ void exti2_isr(void)
     GpioModule& gpio_module = GpioModule::instance();
     Modbus& modbus = Modbus::instance();
 
-    exti_reset_request(gpio_module._exti[address]);  // —бросили флаг
+    exti_reset_request(gpio_module._exti[address]);  // Reset flag
 
     static bool front_rising = false;
     static bool front_falling = false;
@@ -212,7 +212,7 @@ void exti3_isr(void)
     GpioModule& gpio_module = GpioModule::instance();
     Modbus& modbus = Modbus::instance();
 
-    exti_reset_request(gpio_module._exti[address]);  // —бросили флаг
+    exti_reset_request(gpio_module._exti[address]);  // Reset flag
 
     static bool front_rising = false;
     static bool front_falling = false;
@@ -259,7 +259,7 @@ void exti4_isr(void)
     GpioModule& gpio_module = GpioModule::instance();
     Modbus& modbus = Modbus::instance();
 
-    exti_reset_request(gpio_module._exti[address]);  // —бросили флаг
+    exti_reset_request(gpio_module._exti[address]);  // Reset flag
 
     static bool front_rising = false;
     static bool front_falling = false;
@@ -300,11 +300,6 @@ void exti4_isr(void)
 }
 void exti9_5_isr(void)
 {
-
-    auto address5 = static_cast<uint8_t>(GpioModule::Address::PIN5);
-    auto address6 = static_cast<uint8_t>(GpioModule::Address::PIN6);
-    auto address7 = static_cast<uint8_t>(GpioModule::Address::PIN7);
-
     GpioModule& gpio_module = GpioModule::instance();
     Modbus& modbus = Modbus::instance();
 
@@ -320,68 +315,11 @@ void exti9_5_isr(void)
     static bool front_rising[8] = {false};
     static bool front_falling[8] = {false};
 
-//    if (exti_get_flag_status(gpio_module._exti[address5])) {
-//        exti_reset_request(gpio_module._exti[address5]);  // —бросили флаг
-//        gpio_read_registers[address5] =
-//          (uint8_t)(gpio_get(gpio_module._gpio[address5].port_read.gpio_port,
-//                             gpio_module._gpio[address5].port_read.gpio_pin) >>
-//                    address5);
-//
-//        if (gpio_read_registers[address5]) {
-//            front_rising[address5] = true;
-//            latch_low_registers[address5] = GpioModule::LatchStatus::LOW;
-//            latch_high_registers[address5] = GpioModule::LatchStatus::LOW;
-//        }
-//        else {
-//            front_falling[address5] = true;
-//            latch_high_registers[address5] = GpioModule::LatchStatus::HIGH;
-//            latch_low_registers[address5] = GpioModule::LatchStatus::HIGH;
-//        }
-//    }
-//    else if (exti_get_flag_status(gpio_module._exti[address6])) {
-//        exti_reset_request(gpio_module._exti[address6]);
-//        exti_reset_request(gpio_module._exti[address6]);  // —бросили флаг
-//        gpio_read_registers[address6] =
-//          (uint8_t)(gpio_get(gpio_module._gpio[address6].port_read.gpio_port,
-//                             gpio_module._gpio[address6].port_read.gpio_pin) >>
-//                    address6);
-//
-//        if (gpio_read_registers[address6]) {
-//            front_rising[address6] = true;
-//            latch_low_registers[address6] = GpioModule::LatchStatus::LOW;
-//            latch_high_registers[address6] = GpioModule::LatchStatus::LOW;
-//        }
-//        else {
-//            front_falling[address6] = true;
-//            latch_high_registers[address6] = GpioModule::LatchStatus::HIGH;
-//            latch_low_registers[address6] = GpioModule::LatchStatus::HIGH;
-//        }
-//    }
-//    else if (exti_get_flag_status(gpio_module._exti[address7])) {
-//        exti_reset_request(gpio_module._exti[address7]);
-//        exti_reset_request(gpio_module._exti[address7]);  // —бросили флаг
-//        gpio_read_registers[address7] =
-//          (uint8_t)(gpio_get(gpio_module._gpio[address7].port_read.gpio_port,
-//                             gpio_module._gpio[address7].port_read.gpio_pin) >>
-//                    address7);
-//
-//        if (gpio_read_registers[address7]) {
-//            front_rising[address7] = true;
-//            latch_low_registers[address7] = GpioModule::LatchStatus::LOW;
-//            latch_high_registers[address7] = GpioModule::LatchStatus::LOW;
-//        }
-//        else {
-//            front_falling[address7] = true;
-//            latch_high_registers[address7] = GpioModule::LatchStatus::HIGH;
-//            latch_low_registers[address7] = GpioModule::LatchStatus::HIGH;
-//        }
-//    }
-
         for (uint8_t i = 5/*static_cast<uint8_t>(GpioModule::Address::PIN5)*/;
              i <= /*static_cast<uint8_t>(GpioModule::Address::PIN7)*/7; ++i) {
 
             if (exti_get_flag_status(gpio_module._exti[i])) {
-                exti_reset_request(gpio_module._exti[i]);  // —бросили флаг
+                exti_reset_request(gpio_module._exti[i]);  // Reset flag
 
                 // READ_GPIO
                 gpio_read_registers[i] =
@@ -444,9 +382,6 @@ void GpioModule::_counter_clear()
 
     uint16_t* counter_registers =
       modbus.get_iterator<uint16_t>(Input::COUNTER0_VALUE);
-    // uint8_t clear_counter[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-
-    // std::copy_n(clear_counter, 8, input_it_counter);
 
     for (uint32_t i = 0U; i < _gpio.size(); ++i) {
         if (counter_clear_registers[i]) {

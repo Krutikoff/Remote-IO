@@ -62,8 +62,6 @@ class GpioModule
         PortPin port_read;
     };
 
-    // using Queue = etl::queue<Message, 7>;
-
     static GpioModule& instance()
     {
         static GpioModule instance;
