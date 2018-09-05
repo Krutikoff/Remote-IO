@@ -2,7 +2,7 @@
 
 int main()
 {
-    RemoteModule remote_module;
+    RemoteModule& remote_module = RemoteModule::instance();
     Modbus& modbus = Modbus::instance();
 
     while (true) {

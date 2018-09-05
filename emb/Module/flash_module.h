@@ -27,11 +27,11 @@ class FlashModule
 
     struct __attribute__((packed, aligned(1))) FlashData
     {
-        etl::array<GpioModule::GpioMode, 8> gpio_mode; // 8 bytes
-        uint32_t baudrate = 0; // 4 bytes
+        etl::array<GpioModule::GpioMode, 8> gpio_mode;  // 8 bytes
+        uint32_t baudrate = 0;                          // 4 bytes
     };
 
-    static_assert ( (sizeof(FlashData) == 12), "FlashData must be 12 bytes" );
+    static_assert((sizeof(FlashData) == 12), "FlashData must be 12 bytes");
 
     static FlashModule& instance()
     {
@@ -54,4 +54,3 @@ class FlashModule
     void _polling_flash_data();
     uint32_t _write_data_to_flash();
 };
-

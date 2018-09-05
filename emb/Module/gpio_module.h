@@ -72,7 +72,6 @@ class GpioModule
     etl::array<GpioIO, 8> get_qpio() { return _gpio; }
 
  private:
-
     static constexpr uint16_t MAX_VALUE_COUNTER = 65534;
     etl::array<uint8_t, 8> _cache_gpio_read = {0};
 

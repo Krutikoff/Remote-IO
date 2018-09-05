@@ -10,7 +10,6 @@ GpioModule::GpioModule()
 
 void GpioModule::run()
 {
-
     _polling_gpio_registers();
     _latch_clear();
     _counter_clear();
@@ -26,7 +25,7 @@ void GpioModule::_polling_gpio_registers()
     for (uint32_t i = 0U; i < _gpio.size(); ++i) {
         auto current_pin_mode = gpio_setup_registers[i];
 
-        //If change, then write new value
+        // If change, then write new value
         if (_gpio[i].mode != current_pin_mode) {
             _gpio[i].mode = (current_pin_mode == GpioModule::GpioMode::WRITE)
                               ? GpioModule::GpioMode::WRITE
@@ -47,7 +46,7 @@ void GpioModule::_polling_gpio_registers()
     for (uint32_t i = 0U; i < _gpio.size(); ++i) {
         auto current_gpio_write = gpio_write_registers[i];
 
-        //If change, then write new value
+        // If change, then write new value
         if (_cached_gpio_write[i] != current_gpio_write) {
             if (current_gpio_write == 1 &&
                 _gpio[i].mode == GpioModule::GpioMode::WRITE) {
@@ -85,7 +84,6 @@ void exti0_isr(void)
     auto counter_registers =
       modbus.get_iterator<uint16_t>(Input::COUNTER0_VALUE);
 
-
     // READ_GPIO
     gpio_read_registers[address] =
       (uint8_t)(gpio_get(gpio_module._gpio[address].port_read.gpio_port,
@@ -105,7 +103,8 @@ void exti0_isr(void)
     if (front_rising && front_falling) {
 
         counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER) counter_registers[address] = 0;
+        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
+            counter_registers[address] = 0;
         front_rising = false;
         front_falling = false;
     }
@@ -152,7 +151,8 @@ void exti1_isr(void)
     if (front_rising && front_falling) {
 
         counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER) counter_registers[address] = 0;
+        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
+            counter_registers[address] = 0;
         front_rising = false;
         front_falling = false;
     }
@@ -199,7 +199,8 @@ void exti2_isr(void)
     if (front_rising && front_falling) {
 
         counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER) counter_registers[address] = 0;
+        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
+            counter_registers[address] = 0;
         front_rising = false;
         front_falling = false;
     }
@@ -244,9 +245,9 @@ void exti3_isr(void)
     }
 
     if (front_rising && front_falling) {
-
         counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER) counter_registers[address] = 0;
+        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
+            counter_registers[address] = 0;
         front_rising = false;
         front_falling = false;
     }
@@ -293,7 +294,8 @@ void exti4_isr(void)
     if (front_rising && front_falling) {
 
         counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER) counter_registers[address] = 0;
+        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
+            counter_registers[address] = 0;
         front_rising = false;
         front_falling = false;
     }
@@ -315,40 +317,39 @@ void exti9_5_isr(void)
     static bool front_rising[8] = {false};
     static bool front_falling[8] = {false};
 
-        for (uint8_t i = 5/*static_cast<uint8_t>(GpioModule::Address::PIN5)*/;
-             i <= /*static_cast<uint8_t>(GpioModule::Address::PIN7)*/7; ++i) {
+    for (uint8_t i = static_cast<uint8_t>(GpioModule::Address::PIN5);
+         i <= static_cast<uint8_t>(GpioModule::Address::PIN7); ++i) {
 
-            if (exti_get_flag_status(gpio_module._exti[i])) {
-                exti_reset_request(gpio_module._exti[i]);  // Reset flag
+        if (exti_get_flag_status(gpio_module._exti[i])) {
+            exti_reset_request(gpio_module._exti[i]);  // Reset flag
 
-                // READ_GPIO
-                gpio_read_registers[i] =
-                  (uint8_t)(gpio_get(gpio_module._gpio[i].port_read.gpio_port,
-                                     gpio_module._gpio[i].port_read.gpio_pin)
-                                     >>
-                            i);
-                // Latch_low
-                if (gpio_read_registers[i]) {  // LATCH_LOW
-                    front_rising[i] = true;
-                    latch_low_registers[i] = GpioModule::LatchStatus::LOW;
-                    latch_high_registers[i] = GpioModule::LatchStatus::LOW;
-                }
-                else {  // LATCH_HIGH
-                    front_falling[i] = true;
-                    latch_high_registers[i] = GpioModule::LatchStatus::HIGH;
-                    latch_low_registers[i] = GpioModule::LatchStatus::HIGH;
-                }
+            // READ_GPIO
+            gpio_read_registers[i] =
+              (uint8_t)(gpio_get(gpio_module._gpio[i].port_read.gpio_port,
+                                 gpio_module._gpio[i].port_read.gpio_pin) >>
+                        i);
+            // Latch_low
+            if (gpio_read_registers[i]) {  // LATCH_LOW
+                front_rising[i] = true;
+                latch_low_registers[i] = GpioModule::LatchStatus::LOW;
+                latch_high_registers[i] = GpioModule::LatchStatus::LOW;
+            }
+            else {  // LATCH_HIGH
+                front_falling[i] = true;
+                latch_high_registers[i] = GpioModule::LatchStatus::HIGH;
+                latch_low_registers[i] = GpioModule::LatchStatus::HIGH;
+            }
 
-                if (front_rising[i] && front_falling[i]) {
+            if (front_rising[i] && front_falling[i]) {
 
-                    counter_registers[i]++;
-                    if (counter_registers[i] > gpio_module.MAX_VALUE_COUNTER)
-                        counter_registers[i] = 0;
-                    front_rising[i] = false;
-                    front_falling[i] = false;
-                }
+                counter_registers[i]++;
+                if (counter_registers[i] > gpio_module.MAX_VALUE_COUNTER)
+                    counter_registers[i] = 0;
+                front_rising[i] = false;
+                front_falling[i] = false;
             }
         }
+    }
 }
 
 void GpioModule::_latch_clear()
