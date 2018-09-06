@@ -11,9 +11,7 @@
 
 class Modbus
 {
-
 public:
-
     /* Registers protocol Modbus */
     enum class RegisterType
     {
@@ -74,7 +72,6 @@ public:
     void mb_baudrate_set();
 
 private:
-
     static USHORT usRegCoilStart;
     static BOOL usRegCoilBuf[REG_COIL_NREGS];
 

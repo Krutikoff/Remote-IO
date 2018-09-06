@@ -6,7 +6,7 @@ uint32_t FlashModule::run()
     _polling_flash_data();
 
     if (_flag_write) {
-        //_write_data_to_flash();
+        _write_data_to_flash();
     }
     return 0;
 }
