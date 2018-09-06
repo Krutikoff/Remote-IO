@@ -1,0 +1,12 @@
+#Ignore files built by Eclipse
+*.o
+*.hex
+*.elf
+*.mk
+*.map
+*.d
+*.xml
+*.prefs
+*.elf
+/.settings
+/Debug/
