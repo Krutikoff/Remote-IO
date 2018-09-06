@@ -1,17 +1,27 @@
 #include <ConfigModule/remote_module.h>
 
-// RemoteModule::RemoteModule()
-//{
-////        _modbus = Modbus::instance();
-////        _gpio_module = GpioModule::instance();
-////        _usart_module = UsartModule::instance();
-////        //I2cModule i2c_module;
-////        _flash_module = FlashModule::instance();
-//}
+RemoteModule::RemoteModule() :
+  _gpio_module(GpioModule::instance()), _usart_module(UsartModule::instance()),
+  _flash_module(FlashModule::instance())
+{
+    config();
+
+    etl::array<GpioModule::GpioIO, 8> gpio_data = _gpio_module.get_qpio();
+    FlashModule::FlashData* flash_data = _flash_module.get_save_data();
+
+    for (uint32_t i = 0U; i < gpio_data.size(); ++i) {
+        if (flash_data->gpio_mode[i] != GpioModule::GpioMode::READ) {
+            _flash_module.read_data_from_flash();
+        }
+    }
+
+    if (flash_data->baudrate != 0xFFFFFFFF) {
+        _flash_module.read_data_from_flash();
+    }
+}
 
 void RemoteModule::config()
 {
-
     _rcc_clock_config();
     _led_setup();
     _gpio_config();
@@ -43,17 +53,16 @@ void RemoteModule::_remap()
 
 void RemoteModule::_gpio_config()
 {
-    // Конфигурация GPIO на выход портов A, B
+    // Config pins for GPIOA and GPIOB to output mode
     gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
                   GPIO0 | GPIO1 | GPIO2 | GPIO3);
     gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
                   GPIO6 | GPIO7 | GPIO8 | GPIO9);
-    // Конфигурация GPIO для считывания адреса. С подтяжкой к питанию через
-    // регистр ODR
+    // Config GPIO for read address. With pull up to power through register ODR
     gpio_set_mode(GPIOA, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN,
                   GPIO4 | GPIO5 | GPIO6 | GPIO7);
     gpio_set(GPIOA, GPIO4 | GPIO5 | GPIO6 | GPIO7);
-    // Конфигурация GPIO на вход порта С
+    // Config GPIOC to input mode
     gpio_set_mode(GPIOC, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT,
                   GPIO0 | GPIO1 | GPIO2 | GPIO3 | GPIO4 | GPIO5 | GPIO6 |
                     GPIO7);
@@ -70,16 +79,11 @@ void RemoteModule::_exti_config()
 
     exti_select_source(
       EXTI0 | EXTI1 | EXTI2 | EXTI3 | EXTI4 | EXTI5 | EXTI6 | EXTI7, GPIOC);
-    // exti_select_source(EXTI1, GPIOC);
-
     exti_set_trigger(EXTI0 | EXTI1 | EXTI2 | EXTI3 | EXTI4 | EXTI5 | EXTI6 |
                        EXTI7,
                      EXTI_TRIGGER_BOTH);
-    // exti_set_trigger(EXTI1, EXTI_TRIGGER_FALLING);
-
     exti_enable_request(EXTI0 | EXTI1 | EXTI2 | EXTI3 | EXTI4 | EXTI5 | EXTI6 |
                         EXTI7);
-    // exti_enable_request(EXTI1);
 }
 
 void RemoteModule::_led_setup()
@@ -88,15 +92,13 @@ void RemoteModule::_led_setup()
                   GPIO0 | GPIO1 | GPIO2 | GPIO3);
     gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
                   GPIO6 | GPIO7 | GPIO8 | GPIO9);
-
     gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL,
                   GPIO3 | GPIO4);
     gpio_set(GPIOB, GPIO3 | GPIO4);
 }
 
 void RemoteModule::_tim3_config()
-{  // НЕ ВЫЗЫВАЕТСЯ
-
+{
     rcc_periph_clock_enable(RCC_TIM3);
     nvic_enable_irq(NVIC_TIM3_IRQ);
     nvic_set_priority(NVIC_TIM3_IRQ, 2);
@@ -107,7 +109,6 @@ void RemoteModule::_tim3_config()
     timer_set_prescaler(TIM3, (rcc_apb1_frequency * 2) /
                                 100000); /* 72MHz to 50 microseconds period */
     timer_set_period(TIM3, 5);
-
     timer_enable_counter(TIM3);
 
 #if 0
@@ -127,13 +128,12 @@ void RemoteModule::_tim3_config()
 }
 
 void tim3_isr(void)
-{                                // НЕ ВЫЗЫВАЕТСЯ
+{
     TIM_SR(TIM3) &= ~TIM_SR_UIF; /* Clear interrrupt flag. */
 }
 
 void RemoteModule::_Conf_PWM_TIM(uint32_t tim)
 {
-
     // LED PIN: PA1, PA2, PA3, PB6, PB7, PB8, PB9
 
     // gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ,

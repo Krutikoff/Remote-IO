@@ -4,7 +4,6 @@
 void UsartModule::run()
 {
     _baudrate_set();
-    //if (!_queue.empty()) _queue.clear();
 }
 
 
