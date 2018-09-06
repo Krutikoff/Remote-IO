@@ -1,0 +1,27 @@
+{
+    "project": "Remote_IO",
+    "changelog": "./changelog.txt",
+    "output_folder": "./",
+    "make_archive": true,
+    "sequence" : [
+        {
+            "type" : "copy",
+            "src" : [
+                "../emb/Debug/Remote_IO.hex"
+            ],
+            "dest" : [
+                "${release}/Remote_IO.hex"
+            ]
+        }
+    ],
+	
+    "version_in_files_check_enable": true,
+    "version_in_files": [
+        {
+            "check_version": true,
+            "check_date": true,
+            "check_commit_hash": false,
+            "path": "../emb/version.h"
+        }
+    ]
+}
