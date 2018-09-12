@@ -363,7 +363,14 @@ void GpioModule::_latch_clear()
       modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_HIGH);
     uint8_t* latch_clear = modbus.get_iterator<uint8_t>(Coil::LATCH_CLEAR);
 
-    GpioModule::LatchStatus clear_low[8] = {GpioModule::LatchStatus::HIGH};
+    GpioModule::LatchStatus clear_low[8] = {GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH};
     GpioModule::LatchStatus clear_high[8] = {GpioModule::LatchStatus::LOW};
 
     if (*latch_clear) {
