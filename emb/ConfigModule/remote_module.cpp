@@ -9,15 +9,17 @@ RemoteModule::RemoteModule() :
     etl::array<GpioModule::GpioIO, 8> gpio_data = _gpio_module.get_qpio();
     FlashModule::FlashData* flash_data = _flash_module.get_save_data();
 
-    for (uint32_t i = 0U; i < gpio_data.size(); ++i) {
-        if (flash_data->gpio_mode[i] != GpioModule::GpioMode::READ) {
-            _flash_module.read_data_from_flash();
-        }
-    }
+    _flash_module.read_data_from_flash();
 
-    if (flash_data->baudrate != 0xFFFFFFFF) {
-        _flash_module.read_data_from_flash();
-    }
+//    for (uint32_t i = 0U; i < gpio_data.size(); ++i) {
+//        if (flash_data->gpio_mode[i] != GpioModule::GpioMode::READ) {
+//            _flash_module.read_data_from_flash();
+//        }
+//    }
+//
+//    if (flash_data->baudrate != 0xFFFFFFFF) {
+//        _flash_module.read_data_from_flash();
+//    }
 }
 
 void RemoteModule::config()
