@@ -50,12 +50,16 @@ class FlashModule
     static constexpr uint8_t _FLASH_GPIO_FLAG = 0xA;  //
     static constexpr uint8_t _FLASH_UART_BAUDRATE_FLAG = 0xB;
     static constexpr uint8_t _CRC = 0xC;  // last page
+    static constexpr uint8_t _step_unit_address = 4;
 
     uint32_t* _memory_ptr = (uint32_t*)_OPERATION_ADDRESS;
     FlashData* _flash_data_save = (FlashData*)_memory_ptr;
     FlashData _flash_data;
     bool _flag_write = false;
 
+
     void _polling_flash_data();
+    uint32_t _size_flash_data(FlashData flash_data);
     uint32_t _write_data_to_flash();
+
 };
