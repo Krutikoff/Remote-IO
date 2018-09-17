@@ -75,7 +75,9 @@ typedef enum : uint32_t {
 	COUNTER5_VALUE,
 	COUNTER6_VALUE,
 	COUNTER7_VALUE,
-	I2C_RX_DATA
+	ERROR_BAUDRATE_UART,
+	ERROR_FLASH_MEMORY,
+    I2C_RX_DATA,
 }Input;
 
 typedef enum : uint32_t {

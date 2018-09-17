@@ -29,10 +29,10 @@ public:
     static constexpr uint32_t REG_DISCRETE_NREGS = 24;
 
     static constexpr uint32_t REG_HOLDING_START = 0x4001;
-    static constexpr uint32_t REG_HOLDING_NREGS = 3;
+    static constexpr uint32_t REG_HOLDING_NREGS = 4;
 
     static constexpr uint32_t REG_INPUT_START = 0x3001;
-    static constexpr uint32_t REG_INPUT_NREGS = 9;
+    static constexpr uint32_t REG_INPUT_NREGS = 11;
 
     using Error = eMBErrorCode;
     uint8_t modbus_address_device;
