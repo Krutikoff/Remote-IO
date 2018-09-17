@@ -28,9 +28,9 @@ class RemoteModule
         return instance;
     }
 
-    //RemoteModule();
-
  private:
+    static constexpr uint16_t LED_ERROR = GPIO4;
+
     GpioModule& _gpio_module;
     UsartModule& _usart_module;
     I2cModule _i2c_module;
