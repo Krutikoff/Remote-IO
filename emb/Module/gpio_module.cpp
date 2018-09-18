@@ -375,7 +375,7 @@ void GpioModule::_latch_clear()
                                             GpioModule::LatchStatus::HIGH};
     GpioModule::LatchStatus clear_high[8] = {GpioModule::LatchStatus::LOW};
 
-    if (*latch_clear) {
+    if (*latch_clear != 0U) {
         etl::copy_n(clear_low, 8, latch_low_registers);
         etl::copy_n(clear_high, 8, latch_high_registers);
         *latch_clear = 0U;
