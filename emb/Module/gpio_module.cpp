@@ -46,20 +46,22 @@ void GpioModule::_polling_gpio_registers()
     for (uint32_t i = 0U; i < _gpio.size(); ++i) {
         auto current_gpio_write = gpio_write_registers[i];
 
-        // If change, then write new value
-        if (_cached_gpio_write[i] != current_gpio_write) {
-            if (current_gpio_write == 1 &&
-                _gpio[i].mode == GpioModule::GpioMode::WRITE) {
-                gpio_set(_gpio[i].port_write.gpio_port,
-                         _gpio[i].port_write.gpio_pin);
+        if(_gpio[i].mode == GpioModule::GpioMode::WRITE) {
+            // If change, then write new value
+            if (_cached_gpio_write[i] != current_gpio_write) {
+                if (current_gpio_write == 1 &&
+                    _gpio[i].mode == GpioModule::GpioMode::WRITE) {
+                    gpio_set(_gpio[i].port_write.gpio_port,
+                             _gpio[i].port_write.gpio_pin);
+                }
+                else if (current_gpio_write == 0 &&
+                         _gpio[i].mode == GpioModule::GpioMode::WRITE) {
+                    gpio_clear(_gpio[i].port_write.gpio_port,
+                               _gpio[i].port_write.gpio_pin);
+                }
             }
-            else if (current_gpio_write == 0 &&
-                     _gpio[i].mode == GpioModule::GpioMode::WRITE) {
-                gpio_clear(_gpio[i].port_write.gpio_port,
-                           _gpio[i].port_write.gpio_pin);
-            }
+            _cached_gpio_write[i] = current_gpio_write;
         }
-        _cached_gpio_write[i] = current_gpio_write;
     }
 }
 
@@ -363,7 +365,14 @@ void GpioModule::_latch_clear()
       modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_HIGH);
     uint8_t* latch_clear = modbus.get_iterator<uint8_t>(Coil::LATCH_CLEAR);
 
-    GpioModule::LatchStatus clear_low[8] = {GpioModule::LatchStatus::HIGH};
+    GpioModule::LatchStatus clear_low[8] = {GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH,
+                                            GpioModule::LatchStatus::HIGH};
     GpioModule::LatchStatus clear_high[8] = {GpioModule::LatchStatus::LOW};
 
     if (*latch_clear) {

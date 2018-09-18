@@ -27,11 +27,13 @@ class FlashModule
 
     struct __attribute__((packed, aligned(1))) FlashData
     {
+        uint8_t flash_gpio_flag;
+        uint8_t flash_uart_baudrate_flag;
         etl::array<GpioModule::GpioMode, 8> gpio_mode;  // 8 bytes
         uint32_t baudrate = 0;                          // 4 bytes
     };
 
-    static_assert((sizeof(FlashData) == 12), "FlashData must be 12 bytes");
+    static_assert((sizeof(FlashData) == 14), "FlashData must be 14 bytes");
 
     static FlashModule& instance()
     {
@@ -45,12 +47,19 @@ class FlashModule
 
  private:
     static constexpr uint32_t _OPERATION_ADDRESS = 0x08007C00;  // last page
+    static constexpr uint8_t _FLASH_GPIO_FLAG = 0xA;  //
+    static constexpr uint8_t _FLASH_UART_BAUDRATE_FLAG = 0xB;
+    static constexpr uint8_t _CRC = 0xC;  // last page
+    static constexpr uint8_t _step_unit_address = 4;
 
     uint32_t* _memory_ptr = (uint32_t*)_OPERATION_ADDRESS;
     FlashData* _flash_data_save = (FlashData*)_memory_ptr;
     FlashData _flash_data;
     bool _flag_write = false;
 
+
     void _polling_flash_data();
+    uint32_t _size_flash_data(FlashData flash_data);
     uint32_t _write_data_to_flash();
+
 };

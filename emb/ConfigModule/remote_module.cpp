@@ -5,24 +5,13 @@ RemoteModule::RemoteModule() :
   _flash_module(FlashModule::instance())
 {
     config();
-
-    etl::array<GpioModule::GpioIO, 8> gpio_data = _gpio_module.get_qpio();
-    FlashModule::FlashData* flash_data = _flash_module.get_save_data();
-
-    for (uint32_t i = 0U; i < gpio_data.size(); ++i) {
-        if (flash_data->gpio_mode[i] != GpioModule::GpioMode::READ) {
-            _flash_module.read_data_from_flash();
-        }
-    }
-
-    if (flash_data->baudrate != 0xFFFFFFFF) {
-        _flash_module.read_data_from_flash();
-    }
+    _flash_module.read_data_from_flash();
 }
 
 void RemoteModule::config()
 {
     _rcc_clock_config();
+    _remap();
     _led_setup();
     _gpio_config();
     _exti_config();
@@ -92,9 +81,11 @@ void RemoteModule::_led_setup()
                   GPIO0 | GPIO1 | GPIO2 | GPIO3);
     gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
                   GPIO6 | GPIO7 | GPIO8 | GPIO9);
-    gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL,
-                  GPIO3 | GPIO4);
-    gpio_set(GPIOB, GPIO3 | GPIO4);
+    //LED for ERROR status
+
+    gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN,
+                  GPIO4);
+
 }
 
 void RemoteModule::_tim3_config()
