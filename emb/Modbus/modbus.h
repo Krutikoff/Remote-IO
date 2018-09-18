@@ -3,15 +3,9 @@
 #include <Modbus/config_modbus.h>
 #include <mb.h>
 
-#define FALLING 0
-#define RISING 1
-
-#define WRITE_MODE 1
-#define READ_MODE 0
-
 class Modbus
 {
-public:
+ public:
     /* Registers protocol Modbus */
     enum class RegisterType
     {
@@ -46,9 +40,10 @@ public:
     void poll();
 
     RegisterType _get_type(uint32_t address);
-    template<typename T> T* get_iterator(uint32_t address);
+    template<typename T>
+    T* get_iterator(uint32_t address);
 
-private:
+ private:
     static USHORT usRegCoilStart;
     static BOOL usRegCoilBuf[REG_COIL_NREGS];
 
@@ -56,7 +51,7 @@ private:
     static BOOL usRegDiscreteBuf[REG_DISCRETE_NREGS];
 
     static USHORT usRegHoldingStart;
-    static USHORT usRegHoldingBuf[REG_HOLDING_NREGS]; //USHORT
+    static USHORT usRegHoldingBuf[REG_HOLDING_NREGS];  // USHORT
 
     static USHORT usRegInputStart;
     static USHORT usRegInputBuf[REG_INPUT_NREGS];
@@ -67,13 +62,19 @@ private:
     Modbus(const Modbus&) = default;
     Modbus& operator=(const Modbus&);
 
-    friend eMBErrorCode eMBRegInputCB(UCHAR * pucRegBuffer, USHORT usAddress,
+    friend eMBErrorCode eMBRegInputCB(UCHAR* pucRegBuffer,
+                                      USHORT usAddress,
                                       USHORT usNRegs);
-    friend eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress,
-                                        USHORT usNRegs, eMBRegisterMode eMode);
-    friend eMBErrorCode eMBRegCoilsCB(UCHAR * pucRegBuffer, USHORT usAddress,
-                                      USHORT usNCoils, eMBRegisterMode eMode);
-    friend eMBErrorCode eMBRegDiscreteCB(UCHAR * pucRegBuffer, USHORT usAddress,
+    friend eMBErrorCode eMBRegHoldingCB(UCHAR* pucRegBuffer,
+                                        USHORT usAddress,
+                                        USHORT usNRegs,
+                                        eMBRegisterMode eMode);
+    friend eMBErrorCode eMBRegCoilsCB(UCHAR* pucRegBuffer,
+                                      USHORT usAddress,
+                                      USHORT usNCoils,
+                                      eMBRegisterMode eMode);
+    friend eMBErrorCode eMBRegDiscreteCB(UCHAR* pucRegBuffer,
+                                         USHORT usAddress,
                                          USHORT usNDiscrete);
 };
 
@@ -83,23 +84,24 @@ T* Modbus::get_iterator(uint32_t address)
 
     RegisterType type = _get_type(address);
 
-    if (type == RegisterType::COIL && (address < REG_COIL_NREGS + REG_COIL_START)) {
+    if (type == RegisterType::COIL &&
+        (address < REG_COIL_NREGS + REG_COIL_START)) {
         return reinterpret_cast<T*>(usRegCoilBuf + address - REG_COIL_START);
-
     }
-    else if (type == RegisterType::DISCRETE
-        && (address < REG_DISCRETE_NREGS + REG_DISCRETE_START)) {
-        return reinterpret_cast<T*>(usRegDiscreteBuf + address - REG_DISCRETE_START);
+    else if (type == RegisterType::DISCRETE &&
+             (address < REG_DISCRETE_NREGS + REG_DISCRETE_START)) {
+        return reinterpret_cast<T*>(usRegDiscreteBuf + address -
+                                    REG_DISCRETE_START);
     }
-    else if (type == RegisterType::HOLDING
-        && (address < REG_HOLDING_NREGS + REG_HOLDING_START)) {
-        return reinterpret_cast<T*>(usRegHoldingBuf + address - REG_HOLDING_START);
+    else if (type == RegisterType::HOLDING &&
+             (address < REG_HOLDING_NREGS + REG_HOLDING_START)) {
+        return reinterpret_cast<T*>(usRegHoldingBuf + address -
+                                    REG_HOLDING_START);
     }
-    else if (type == RegisterType::INPUT
-        && (address < REG_INPUT_NREGS + REG_INPUT_START)) {
+    else if (type == RegisterType::INPUT &&
+             (address < REG_INPUT_NREGS + REG_INPUT_START)) {
         return reinterpret_cast<T*>(usRegInputBuf + address - REG_INPUT_START);
     }
     else
         return nullptr;
 }
-
