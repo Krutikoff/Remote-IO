@@ -16,14 +16,14 @@ USHORT Modbus::usRegInputBuf[REG_INPUT_NREGS] = { 0 };
 
 Modbus *_modbus_ptr;
 
-Modbus::Modbus()
+Modbus::Modbus():modbus_address_device()
 {
-
     _modbus_ptr = this;
 
     eMBErrorCode status;
 
-    modbus_address_device = (UCHAR) ((~((gpio_port_read(GPIOA) >> 4))) & 0x000F);
+    EncoderModule& encoder_module = EncoderModule::instance();
+    modbus_address_device = encoder_module.get_address_device();
 
     status = eMBInit(eMBMode::MB_RTU, modbus_address_device, 0, MODBUS_BAUDRATE,
                      MB_PAR_NONE);
@@ -38,14 +38,19 @@ Modbus::Modbus()
 
 }
 
-void Modbus::poll()
+bool Modbus::poll()
 {
     eMBErrorCode status;
     status = eMBPoll();
     if (status != eMBErrorCode::MB_ENOERR) {
         __asm("nop");
+        return false;
     }
-    __asm("nop");
+    else {
+        __asm("nop");
+        return true;
+
+    }
 
 }
 

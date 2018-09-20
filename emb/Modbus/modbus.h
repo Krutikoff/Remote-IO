@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Modbus/config_modbus.h>
+#include "config_modbus.h"
 #include <mb.h>
+#include <Module/encoder.h>
 
 class Modbus
 {
@@ -37,7 +38,7 @@ class Modbus
         return instance;
     }
 
-    void poll();
+    bool poll();
 
     RegisterType _get_type(uint32_t address);
     template<typename T>
