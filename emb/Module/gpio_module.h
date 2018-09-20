@@ -97,10 +97,12 @@ class GpioModule
     void _latch_clear();
     void _counter_clear();
 
+
     friend void exti0_isr(void);
     friend void exti1_isr(void);
     friend void exti2_isr(void);
     friend void exti3_isr(void);
     friend void exti4_isr(void);
     friend void exti9_5_isr(void);
+    friend void common_exti_handler();
 };

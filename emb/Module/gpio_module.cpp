@@ -46,7 +46,7 @@ void GpioModule::_polling_gpio_registers()
     for (uint32_t i = 0U; i < _gpio.size(); ++i) {
         auto current_gpio_write = gpio_write_registers[i];
 
-        if(_gpio[i].mode == GpioModule::GpioMode::WRITE) {
+        if (_gpio[i].mode == GpioModule::GpioMode::WRITE) {
             // If change, then write new value
             if (_cached_gpio_write[i] != current_gpio_write) {
                 if (current_gpio_write == 1 &&
@@ -65,247 +65,11 @@ void GpioModule::_polling_gpio_registers()
     }
 }
 
-void exti0_isr(void)
+void common_exti_handler()
 {
-    auto address = static_cast<uint8_t>(GpioModule::Address::PIN0);
 
     Modbus& modbus = Modbus::instance();
     GpioModule& gpio_module = GpioModule::instance();
-
-    exti_reset_request(gpio_module._exti[address]);  // Reset flag
-
-    static bool front_rising = false;
-    static bool front_falling = false;
-
-    auto gpio_read_registers =
-      modbus.get_iterator<uint8_t>(Discrete::GPIO_READ_BIT0);
-    auto latch_low_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_LOW);
-    auto latch_high_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_HIGH);
-    auto counter_registers =
-      modbus.get_iterator<uint16_t>(Input::COUNTER0_VALUE);
-
-    // READ_GPIO
-    gpio_read_registers[address] =
-      (uint8_t)(gpio_get(gpio_module._gpio[address].port_read.gpio_port,
-                         gpio_module._gpio[address].port_read.gpio_pin));
-    // Latch_low
-    if (gpio_read_registers[address]) {  // LATCH_LOW
-        front_rising = true;
-        latch_low_registers[address] = GpioModule::LatchStatus::LOW;
-        latch_high_registers[address] = GpioModule::LatchStatus::LOW;
-    }
-    else {  // LATCH_HIGH
-        front_falling = true;
-        latch_high_registers[address] = GpioModule::LatchStatus::HIGH;
-        latch_low_registers[address] = GpioModule::LatchStatus::HIGH;
-    }
-
-    if (front_rising && front_falling) {
-
-        counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
-            counter_registers[address] = 0;
-        front_rising = false;
-        front_falling = false;
-    }
-}
-
-void exti1_isr(void)
-{
-    auto address = static_cast<uint8_t>(GpioModule::Address::PIN1);
-
-    GpioModule& gpio_module = GpioModule::instance();
-    Modbus& modbus = Modbus::instance();
-
-    exti_reset_request(gpio_module._exti[address]);  // Reset flag
-
-    static bool front_rising = false;
-    static bool front_falling = false;
-
-    auto gpio_read_registers =
-      modbus.get_iterator<uint8_t>(Discrete::GPIO_READ_BIT0);
-    auto latch_low_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_LOW);
-    auto latch_high_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_HIGH);
-    auto counter_registers =
-      modbus.get_iterator<uint16_t>(Input::COUNTER0_VALUE);
-
-    // READ_GPIO
-    gpio_read_registers[address] =
-      (uint8_t)((gpio_get(gpio_module._gpio[address].port_read.gpio_port,
-                          gpio_module._gpio[address].port_read.gpio_pin)) >>
-                1);
-    // Latch_low
-    if (gpio_read_registers[address]) {  // LATCH_LOW
-        front_rising = true;
-        latch_low_registers[address] = GpioModule::LatchStatus::LOW;
-        latch_high_registers[address] = GpioModule::LatchStatus::LOW;
-    }
-    else {  // LATCH_HIGH
-        front_falling = true;
-        latch_high_registers[address] = GpioModule::LatchStatus::HIGH;
-        latch_low_registers[address] = GpioModule::LatchStatus::HIGH;
-    }
-
-    if (front_rising && front_falling) {
-
-        counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
-            counter_registers[address] = 0;
-        front_rising = false;
-        front_falling = false;
-    }
-}
-
-void exti2_isr(void)
-{
-    auto address = static_cast<uint8_t>(GpioModule::Address::PIN2);
-
-    GpioModule& gpio_module = GpioModule::instance();
-    Modbus& modbus = Modbus::instance();
-
-    exti_reset_request(gpio_module._exti[address]);  // Reset flag
-
-    static bool front_rising = false;
-    static bool front_falling = false;
-
-    auto gpio_read_registers =
-      modbus.get_iterator<uint8_t>(Discrete::GPIO_READ_BIT0);
-    auto latch_low_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_LOW);
-    auto latch_high_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_HIGH);
-    auto counter_registers =
-      modbus.get_iterator<uint16_t>(Input::COUNTER0_VALUE);
-
-    // READ_GPIO
-    gpio_read_registers[address] =
-      (uint8_t)((gpio_get(gpio_module._gpio[address].port_read.gpio_port,
-                          gpio_module._gpio[address].port_read.gpio_pin)) >>
-                2);
-    // Latch_low
-    if (gpio_read_registers[address]) {  // LATCH_LOW
-        front_rising = true;
-        latch_low_registers[address] = GpioModule::LatchStatus::LOW;
-        latch_high_registers[address] = GpioModule::LatchStatus::LOW;
-    }
-    else {  // LATCH_HIGH
-        front_falling = true;
-        latch_high_registers[address] = GpioModule::LatchStatus::HIGH;
-        latch_low_registers[address] = GpioModule::LatchStatus::HIGH;
-    }
-
-    if (front_rising && front_falling) {
-
-        counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
-            counter_registers[address] = 0;
-        front_rising = false;
-        front_falling = false;
-    }
-}
-
-void exti3_isr(void)
-{
-    auto address = static_cast<uint8_t>(GpioModule::Address::PIN3);
-
-    GpioModule& gpio_module = GpioModule::instance();
-    Modbus& modbus = Modbus::instance();
-
-    exti_reset_request(gpio_module._exti[address]);  // Reset flag
-
-    static bool front_rising = false;
-    static bool front_falling = false;
-
-    auto gpio_read_registers =
-      modbus.get_iterator<uint8_t>(Discrete::GPIO_READ_BIT0);
-    auto latch_low_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_LOW);
-    auto latch_high_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_HIGH);
-    auto counter_registers =
-      modbus.get_iterator<uint16_t>(Input::COUNTER0_VALUE);
-
-    // READ_GPIO
-    gpio_read_registers[address] =
-      (uint8_t)((gpio_get(gpio_module._gpio[address].port_read.gpio_port,
-                          gpio_module._gpio[address].port_read.gpio_pin)) >>
-                3);
-    // Latch_low
-    if (gpio_read_registers[address]) {  // LATCH_LOW
-        front_rising = true;
-        latch_low_registers[address] = GpioModule::LatchStatus::LOW;
-        latch_high_registers[address] = GpioModule::LatchStatus::LOW;
-    }
-    else {  // LATCH_HIGH
-        front_falling = true;
-        latch_high_registers[address] = GpioModule::LatchStatus::HIGH;
-        latch_low_registers[address] = GpioModule::LatchStatus::HIGH;
-    }
-
-    if (front_rising && front_falling) {
-        counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
-            counter_registers[address] = 0;
-        front_rising = false;
-        front_falling = false;
-    }
-}
-
-void exti4_isr(void)
-{
-    auto address = static_cast<uint8_t>(GpioModule::Address::PIN4);
-
-    GpioModule& gpio_module = GpioModule::instance();
-    Modbus& modbus = Modbus::instance();
-
-    exti_reset_request(gpio_module._exti[address]);  // Reset flag
-
-    static bool front_rising = false;
-    static bool front_falling = false;
-
-    auto gpio_read_registers =
-      modbus.get_iterator<uint8_t>(Discrete::GPIO_READ_BIT0);
-    auto latch_low_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_LOW);
-    auto latch_high_registers =
-      modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_HIGH);
-    auto counter_registers =
-      modbus.get_iterator<uint16_t>(Input::COUNTER0_VALUE);
-
-    // READ_GPIO
-    gpio_read_registers[address] =
-      (uint8_t)((gpio_get(gpio_module._gpio[address].port_read.gpio_port,
-                          gpio_module._gpio[address].port_read.gpio_pin)) >>
-                4);
-    // Latch_low
-    if (gpio_read_registers[address]) {  // LATCH_LOW
-        front_rising = true;
-        latch_low_registers[address] = GpioModule::LatchStatus::LOW;
-        latch_high_registers[address] = GpioModule::LatchStatus::LOW;
-    }
-    else {  // LATCH_HIGH
-        front_falling = true;
-        latch_high_registers[address] = GpioModule::LatchStatus::HIGH;
-        latch_low_registers[address] = GpioModule::LatchStatus::HIGH;
-    }
-
-    if (front_rising && front_falling) {
-
-        counter_registers[address]++;
-        if (counter_registers[address] > gpio_module.MAX_VALUE_COUNTER)
-            counter_registers[address] = 0;
-        front_rising = false;
-        front_falling = false;
-    }
-}
-void exti9_5_isr(void)
-{
-    GpioModule& gpio_module = GpioModule::instance();
-    Modbus& modbus = Modbus::instance();
 
     auto gpio_read_registers =
       modbus.get_iterator<uint8_t>(Discrete::GPIO_READ_BIT0);
@@ -319,7 +83,7 @@ void exti9_5_isr(void)
     static bool front_rising[8] = {false};
     static bool front_falling[8] = {false};
 
-    for (uint8_t i = static_cast<uint8_t>(GpioModule::Address::PIN5);
+    for (uint8_t i = static_cast<uint8_t>(GpioModule::Address::PIN0);
          i <= static_cast<uint8_t>(GpioModule::Address::PIN7); ++i) {
 
         if (exti_get_flag_status(gpio_module._exti[i])) {
@@ -354,6 +118,35 @@ void exti9_5_isr(void)
     }
 }
 
+void exti0_isr(void)
+{
+    common_exti_handler();
+}
+
+void exti1_isr(void)
+{
+    common_exti_handler();
+}
+
+void exti2_isr(void)
+{
+    common_exti_handler();
+}
+
+void exti3_isr(void)
+{
+    common_exti_handler();
+}
+
+void exti4_isr(void)
+{
+    common_exti_handler();
+}
+void exti9_5_isr(void)
+{
+    common_exti_handler();
+}
+
 void GpioModule::_latch_clear()
 {
 
@@ -365,14 +158,11 @@ void GpioModule::_latch_clear()
       modbus.get_iterator<GpioModule::LatchStatus>(Discrete::LATCH0_HIGH);
     uint8_t* latch_clear = modbus.get_iterator<uint8_t>(Coil::LATCH_CLEAR);
 
-    GpioModule::LatchStatus clear_low[8] = {GpioModule::LatchStatus::HIGH,
-                                            GpioModule::LatchStatus::HIGH,
-                                            GpioModule::LatchStatus::HIGH,
-                                            GpioModule::LatchStatus::HIGH,
-                                            GpioModule::LatchStatus::HIGH,
-                                            GpioModule::LatchStatus::HIGH,
-                                            GpioModule::LatchStatus::HIGH,
-                                            GpioModule::LatchStatus::HIGH};
+    GpioModule::LatchStatus clear_low[8] = {
+      GpioModule::LatchStatus::HIGH, GpioModule::LatchStatus::HIGH,
+      GpioModule::LatchStatus::HIGH, GpioModule::LatchStatus::HIGH,
+      GpioModule::LatchStatus::HIGH, GpioModule::LatchStatus::HIGH,
+      GpioModule::LatchStatus::HIGH, GpioModule::LatchStatus::HIGH};
     GpioModule::LatchStatus clear_high[8] = {GpioModule::LatchStatus::LOW};
 
     if (*latch_clear != 0U) {
