@@ -10,6 +10,7 @@ void UsartModule::_baudrate_set()
 {
 
     Modbus& modbus = Modbus::instance();
+    ErrorModule& error_module = ErrorModule::instance();
 
     auto baudrate_registers =
       modbus.get_iterator<uint32_t>(Holding::UART_BAUDRATE_0);
@@ -22,7 +23,7 @@ void UsartModule::_baudrate_set()
          baud < 7; ++baud) {
         if (*baudrate_registers == baudrate_array[baud]) {
             is_baudrate_correct = true;
-            gpio_set(GPIOB, GPIO4);  // Off LED ERROR
+            error_module.error_indicator_off();  // Off LED ERROR
             if(*error_uart_baudrate != _ERROR_BAUDRATE_OK)
                 *error_uart_baudrate = _ERROR_BAUDRATE_OK;
             break;
@@ -32,14 +33,6 @@ void UsartModule::_baudrate_set()
     if (_baudrate != *baudrate_registers &&
         is_baudrate_correct) {  // Change baudrate Uart
 
-        //_baudrate_standart_value[1];
-
-//        if (is_baudrate_correct)
-//            _baudrate = *baudrate_registers;
-//        else {                         // LED ERROR
-//            gpio_clear(GPIOB, GPIO4);  // ON LED ERROR
-//            return;
-//        }
         nvic_disable_irq(MODBUS_IRQ);
         usart_disable(MODBUS_UART);
         _baudrate = *baudrate_registers;
@@ -48,7 +41,7 @@ void UsartModule::_baudrate_set()
         usart_enable(MODBUS_UART);
     }
     else if (!is_baudrate_correct) {
-        gpio_clear(GPIOB, GPIO4);  // ON LED ERROR
+        error_module.error_indicator_on();  // ON LED ERROR
         if(*error_uart_baudrate != _ERROR_BAUDRATE)
             *error_uart_baudrate = _ERROR_BAUDRATE;
         return;

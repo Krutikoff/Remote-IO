@@ -2,6 +2,7 @@
 #include <Modbus/registers.h>
 #include <cstdint>
 #include <etl/queue.h>
+#include <Module/error_module.h>
 
 class UsartModule
 {
